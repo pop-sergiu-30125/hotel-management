@@ -1,0 +1,51 @@
+HOTEL MANAGEMENT APP - RUN GUIDE
+
+1. Requirements:
+Install Node.js.
+Check with:
+node -v
+npm -v
+
+2. Start backend:
+Open terminal in the server folder:
+
+cd server
+npm install
+node server.js
+
+Expected message:
+Server running on http://localhost:3000
+
+Test in browser:
+http://localhost:3000/
+
+3. Start frontend:
+Open another terminal in the client folder:
+
+cd client
+npx http-server
+OR JUST http-server
+
+Open the URL shown in the terminal, usually:
+http://localhost:8080/
+
+4. Important:
+Backend runs on:
+http://localhost:3000
+
+Frontend runs on:
+http://localhost:8080
+
+Both must be running at the same time.
+
+5. Current API routes:
+POST /signup
+POST /login
+GET /users
+PUT /users/:id
+
+Example backend URL used in client.js:
+const API_URL = "http://localhost:3000";
+
+6. Data is stored in:
+server/database.json

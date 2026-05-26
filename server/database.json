@@ -1,0 +1,34 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin",
+      "balance": 0
+    },
+    {
+      "id": 2,
+      "username": "andrei",
+      "password": "pass123",
+      "role": "guest",
+      "balance": 1000
+    },
+    {
+      "id": 3,
+      "username": "maria",
+      "password": "pass123",
+      "role": "guest",
+      "balance": 1000
+    },
+    {
+      "id": 4,
+      "username": "paula",
+      "password": "test123",
+      "role": "guest",
+      "balance": 500
+    }
+  ],
+  "rooms": [],
+  "reservations": []
+}
