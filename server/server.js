@@ -7,6 +7,9 @@ const PORT = 3000;
 const DB_FILE = "./database.json";
 
 app.use(cors());
+
+let connectedClients = []; //pentru a vedea nr de clienti conectati
+
 app.use(express.json());
 
 function readDatabase() {
@@ -116,6 +119,39 @@ app.put("/users/:id", function (req, res) {
   res.json({
     message: "User updated successfully",
     user: publicUser(user)
+  });
+});
+
+//clients visualisation
+app.post("/clients/connect", function (req, res) {
+  const clientId = req.body.clientId;
+
+  if (!clientId) {
+    return res.status(400).json({ message: "clientId is required" });
+  }
+
+  const alreadyConnected = connectedClients.find(function (client) {
+    return client.id === clientId;
+  });
+
+  if (!alreadyConnected) {
+    connectedClients.push({
+      id: clientId,
+      connectedAt: new Date().toLocaleString()
+    });
+  }
+
+  res.json({
+    message: "Client connected",
+    connectedClients: connectedClients.length,
+    clients: connectedClients
+  });
+});
+
+app.get("/clients", function (req, res) {
+  res.json({
+    connectedClients: connectedClients.length,
+    clients: connectedClients
   });
 });
 

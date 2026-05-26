@@ -27,6 +27,13 @@
       "password": "test123",
       "role": "guest",
       "balance": 500
+    },
+    {
+      "id": 5,
+      "username": "paul",
+      "password": "test123",
+      "role": "guest",
+      "balance": 500
     }
   ],
   "rooms": [],

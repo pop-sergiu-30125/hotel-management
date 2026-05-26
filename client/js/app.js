@@ -1,5 +1,28 @@
 const API_URL = "http://localhost:3000";
 
+let clientId = localStorage.getItem("clientId");
+
+if (!clientId) {
+  clientId = Date.now().toString();
+  localStorage.setItem("clientId", clientId);
+}
+
+fetch(API_URL + "/clients/connect", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    clientId: clientId
+  })
+})
+  .then(function (response) {
+    return response.json();
+  })
+  .then(function (data) {
+    console.log("Client registered:", data);
+  });
+
 console.log("app.js loaded");
 
 function show(data) {
