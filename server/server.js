@@ -40,10 +40,11 @@ app.get("/", function (req, res) {
 
 app.post("/signup", function (req, res) {
   const db = readDatabase();
+
   const username = req.body.username;
   const password = req.body.password;
-  const role = req.body.role || "guest";
-  const balance = req.body.balance || 0;
+  const role = "guest";
+  const balance = 0;
 
   if (!username || !password) {
     return res.status(400).json({ message: "Username and password are required" });
@@ -121,6 +122,105 @@ app.put("/users/:id", function (req, res) {
     user: publicUser(user)
   });
 });
+
+// DELETE USER
+// Admin can delete any user.
+// Regular users can delete only their own account.
+app.delete("/users/:id", function (req, res) {
+  const db = readDatabase();
+
+  const userIdToDelete = Number(req.params.id);
+  const loggedUserId = Number(req.body.loggedUserId);
+
+  const loggedUser = db.users.find(function (user) {
+    return user.id === loggedUserId;
+  });
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      message: "You must be logged in"
+    });
+  }
+
+  const userToDelete = db.users.find(function (user) {
+    return user.id === userIdToDelete;
+  });
+
+  if (!userToDelete) {
+    return res.status(404).json({
+      message: "User not found"
+    });
+  }
+
+  if (loggedUser.role !== "admin" && loggedUser.id !== userIdToDelete) {
+    return res.status(403).json({
+      message: "You can delete only your own account"
+    });
+  }
+
+  db.users = db.users.filter(function (user) {
+    return user.id !== userIdToDelete;
+  });
+
+  writeDatabase(db);
+
+  res.json({
+    message: "User deleted successfully"
+  });
+});
+
+// UPDATE BALANCE
+// User can change only their own balance.
+// Admin can change any user's balance.
+app.put("/users/:id/balance", function (req, res) {
+  const db = readDatabase();
+
+  const userIdToUpdate = Number(req.params.id);
+  const loggedUserId = Number(req.body.loggedUserId);
+  const newBalance = Number(req.body.balance);
+
+  const loggedUser = db.users.find(function (user) {
+    return user.id === loggedUserId;
+  });
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      message: "You must be logged in"
+    });
+  }
+
+  const userToUpdate = db.users.find(function (user) {
+    return user.id === userIdToUpdate;
+  });
+
+  if (!userToUpdate) {
+    return res.status(404).json({
+      message: "User not found"
+    });
+  }
+
+  if (loggedUser.role !== "admin" && loggedUser.id !== userIdToUpdate) {
+    return res.status(403).json({
+      message: "You can update only your own balance"
+    });
+  }
+
+  if (isNaN(newBalance) || newBalance < 0) {
+    return res.status(400).json({
+      message: "Balance must be a positive number"
+    });
+  }
+
+  userToUpdate.balance = newBalance;
+
+  writeDatabase(db);
+
+  res.json({
+    message: "Balance updated successfully",
+    user: publicUser(userToUpdate)
+  });
+});
+
 
 //clients visualisation
 app.post("/clients/connect", function (req, res) {

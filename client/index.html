@@ -9,7 +9,6 @@
   <h2>Sign Up</h2>
   <input id="signupUsername" placeholder="username">
   <input id="signupPassword" placeholder="password" type="password">
-  <input id="signupBalance" placeholder="balance" type="number">
   <button onclick="signup()">Sign Up</button>
 
   <h2>Login</h2>
@@ -17,9 +16,23 @@
   <input id="loginPassword" placeholder="password" type="password">
   <button onclick="login()">Login</button>
 
+  <button onclick="logout()">Logout</button>
+
   <h2>Users</h2>
   <button onclick="loadUsers()">Load Users</button>
   <pre id="output"></pre>
+
+  <h2>Delete User</h2>
+  <input id="deleteUserId" placeholder="User ID" type="number">
+  <button onclick="deleteUser()">Delete User</button>
+
+  <h2>Login Status</h2>
+  <button onclick="checkLoginStatus()">Check Login Status</button>
+
+  <h2>Update Balance</h2>
+  <input id="balanceUserId" placeholder="User ID" type="number">
+  <input id="newBalance" placeholder="New balance" type="number">
+  <button onclick="updateBalance()">Update Balance</button>
 
   <script src="js/app.js"></script>
 </body>

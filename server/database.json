@@ -8,20 +8,6 @@
       "balance": 0
     },
     {
-      "id": 2,
-      "username": "andrei",
-      "password": "pass123",
-      "role": "guest",
-      "balance": 1000
-    },
-    {
-      "id": 3,
-      "username": "maria",
-      "password": "pass123",
-      "role": "guest",
-      "balance": 1000
-    },
-    {
       "id": 4,
       "username": "paula",
       "password": "test123",
@@ -34,6 +20,20 @@
       "password": "test123",
       "role": "guest",
       "balance": 500
+    },
+    {
+      "id": 6,
+      "username": "maria",
+      "password": "pass123",
+      "role": "guest",
+      "balance": 400
+    },
+    {
+      "id": 7,
+      "username": "marian",
+      "password": "pass123",
+      "role": "guest",
+      "balance": 800
     }
   ],
   "rooms": [],

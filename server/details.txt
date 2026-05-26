@@ -24,17 +24,20 @@ Open another terminal in the client folder:
 
 cd client
 npx http-server
-OR JUST http-server
+OR
+http-server
 
 Open the URL shown in the terminal, usually:
 http://localhost:8080/
+or sometimes:
+http://localhost:8081/
 
 4. Important:
 Backend runs on:
 http://localhost:3000
 
 Frontend runs on:
-http://localhost:8080
+http://localhost:8080 or http://localhost:8081
 
 Both must be running at the same time.
 
@@ -43,9 +46,24 @@ POST /signup
 POST /login
 GET /users
 PUT /users/:id
+PUT /users/:id/balance
+DELETE /users/:id
+POST /clients/connect
+GET /clients
 
-Example backend URL used in client.js:
+Example backend URL used in app.js:
 const API_URL = "http://localhost:3000";
 
 6. Data is stored in:
 server/database.json
+
+7. Main functions:
+- User sign up and login.
+- User logout and login status check.
+- View all users.
+- Update username and password.
+- Update user balance.
+- Delete account with role-based permission.
+- Register opened client pages.
+- View connected client count.
+- Store all data in database.json.
