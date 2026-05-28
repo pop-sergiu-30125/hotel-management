@@ -1,206 +1,467 @@
 const API_URL = "http://localhost:3000";
 
-console.log("app.js loaded");
+var app = new Vue({
+  el: "#app",
 
-// CLIENT VISUALIZATION
-let clientId = localStorage.getItem("clientId");
+  data: {
+    signupUsername: "",
+    signupPassword: "",
 
-if (!clientId) {
-  clientId = Date.now().toString();
-  localStorage.setItem("clientId", clientId);
-}
+    loginUsername: "",
+    loginPassword: "",
 
-axios.post(API_URL + "/clients/connect", {
-  clientId: clientId
-})
-  .then(function (response) {
-    console.log("Client registered:", response.data);
-  })
-  .catch(function (error) {
-    console.log("Could not register client:", error);
-  });
+    updateUserId: "",
+    updateUsername: "",
+    updatePassword: "",
 
-function show(data) {
-  document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-}
+    balanceUserId: "",
+    newBalance: "",
 
-// SIGN UP
-function signup() {
-  console.log("signup clicked");
+    deleteUserId: "",
 
-  const username = document.getElementById("signupUsername").value;
-  const password = document.getElementById("signupPassword").value;
+    output: "",
 
-  axios.post(API_URL + "/signup", {
-    username: username,
-    password: password
-  })
-    .then(function (response) {
-      show(response.data);
+    //rooms
+    rooms: [],
+
+    roomName: "",
+    roomNumber: "",
+    numberOfRooms: "",
+    capacity: "",
+    price: "",
+    description: "",
+
+    updateRoomId: "",
+    updateRoomName: "",
+    updateRoomPrice: "",
+    updateRoomStatus: "",
+
+    deleteRoomId: "",
+
+    imageRoomId: "",
+    roomImage: "",
+
+    //reservation
+    reservationRoomId: "",
+    reservationCheckIn: "",
+    reservationCheckOut: "",
+
+    cancelReservationId: ""
+  },
+
+  created: function () {
+    this.registerClient();
+  },
+
+  methods: {
+    show: function (data) {
+      this.output = JSON.stringify(data, null, 2);
+    },
+
+    getLoggedUser: function () {
+      return JSON.parse(localStorage.getItem("loggedUser"));
+    },
+
+    registerClient: function () {
+      let clientId = localStorage.getItem("clientId");
+
+      if (!clientId) {
+        clientId = Date.now().toString();
+        localStorage.setItem("clientId", clientId);
+      }
+
+      axios.post(API_URL + "/clients/connect", {
+        clientId: clientId
+      })
+        .then(function (response) {
+          console.log("Client registered:", response.data);
+        })
+        .catch(function (error) {
+          console.log("Could not register client:", error);
+        });
+    },
+
+    signup: function () {
+      axios.post(API_URL + "/signup", {
+        username: this.signupUsername,
+        password: this.signupPassword
+      })
+        .then(response => {
+          this.show(response.data);
+        })
+        .catch(error => {
+          if (error.response) {
+            this.show(error.response.data);
+          } else {
+            this.show({ error: "Could not connect to server" });
+          }
+        });
+    },
+
+    login: function () {
+      axios.post(API_URL + "/login", {
+        username: this.loginUsername,
+        password: this.loginPassword
+      })
+        .then(response => {
+          const data = response.data;
+
+          if (data.user) {
+            localStorage.setItem("loggedUser", JSON.stringify(data.user));
+          }
+
+          this.show(data);
+        })
+        .catch(error => {
+          if (error.response) {
+            this.show(error.response.data);
+          } else {
+            this.show({ error: "Could not connect to server" });
+          }
+        });
+    },
+
+    logout: function () {
+      localStorage.removeItem("loggedUser");
+
+      this.show({
+        message: "Logged out"
+      });
+    },
+
+    checkLoginStatus: function () {
+      const loggedUser = this.getLoggedUser();
+
+      if (!loggedUser) {
+        this.show({
+          loggedIn: false,
+          message: "You are not logged in"
+        });
+        return;
+      }
+
+      this.show({
+        loggedIn: true,
+        message: "You are logged in",
+        user: loggedUser
+      });
+    },
+
+    loadUsers: function () {
+      axios.get(API_URL + "/users")
+        .then(response => {
+          this.show(response.data);
+        })
+        .catch(error => {
+          if (error.response) {
+            this.show(error.response.data);
+          } else {
+            this.show({ error: "Could not connect to server" });
+          }
+        });
+    },
+
+    updateUser: function () {
+      axios.put(API_URL + "/users/" + this.updateUserId, {
+        username: this.updateUsername,
+        password: this.updatePassword
+      })
+        .then(response => {
+          this.show(response.data);
+        })
+        .catch(error => {
+          if (error.response) {
+            this.show(error.response.data);
+          } else {
+            this.show({ error: "Could not connect to server" });
+          }
+        });
+    },
+
+    updateBalance: function () {
+      const loggedUser = this.getLoggedUser();
+
+      if (!loggedUser) {
+        this.show({ message: "You must login first" });
+        return;
+      }
+
+      axios.put(API_URL + "/users/" + this.balanceUserId + "/balance", {
+        loggedUserId: loggedUser.id,
+        balance: Number(this.newBalance)
+      })
+        .then(response => {
+          const data = response.data;
+
+          if (data.user && data.user.id === loggedUser.id) {
+            localStorage.setItem("loggedUser", JSON.stringify(data.user));
+          }
+
+          this.show(data);
+        })
+        .catch(error => {
+          if (error.response) {
+            this.show(error.response.data);
+          } else {
+            this.show({ error: "Could not connect to server" });
+          }
+        });
+    },
+
+    deleteUser: function () {
+      const loggedUser = this.getLoggedUser();
+
+      if (!loggedUser) {
+        this.show({ message: "You must login first" });
+        return;
+      }
+
+      axios.delete(API_URL + "/users/" + this.deleteUserId, {
+        data: {
+          loggedUserId: loggedUser.id
+        }
+      })
+        .then(response => {
+          this.show(response.data);
+        })
+        .catch(error => {
+          if (error.response) {
+            this.show(error.response.data);
+          } else {
+            this.show({ error: "Could not connect to server" });
+          }
+        });
+    },
+
+    //for roomController
+    loadRooms: function () {
+  axios.get(API_URL + "/rooms")
+    .then(response => {
+      this.rooms = response.data;
+      this.show(response.data);
     })
-    .catch(function (error) {
+    .catch(error => {
       if (error.response) {
-        show(error.response.data);
+        this.show(error.response.data);
       } else {
-        show({ error: "Could not connect to server" });
+        this.show({ error: "Could not connect to server" });
       }
     });
-}
+},
 
-// LOGIN
-function login() {
-  console.log("login clicked");
-
-  const username = document.getElementById("loginUsername").value;
-  const password = document.getElementById("loginPassword").value;
-
-  axios.post(API_URL + "/login", {
-    username: username,
-    password: password
-  })
-    .then(function (response) {
-      const data = response.data;
-
-      if (data.user) {
-        localStorage.setItem("loggedUser", JSON.stringify(data.user));
-      }
-
-      show(data);
-    })
-    .catch(function (error) {
-      if (error.response) {
-        show(error.response.data);
-      } else {
-        show({ error: "Could not connect to server" });
-      }
-    });
-}
-
-// LOGOUT
-function logout() {
-  localStorage.removeItem("loggedUser");
-
-  show({
-    message: "Logged out"
-  });
-}
-
-// CHECK LOGIN STATUS
-function checkLoginStatus() {
-  console.log("checkLoginStatus clicked");
-
-  const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+addRoom: function () {
+  const loggedUser = this.getLoggedUser();
 
   if (!loggedUser) {
-    show({
-      loggedIn: false,
-      message: "You are not logged in"
-    });
+    this.show({ message: "You must login first" });
     return;
   }
 
-  show({
-    loggedIn: true,
-    message: "You are logged in",
-    user: loggedUser
-  });
-}
-
-// LOAD USERS
-function loadUsers() {
-  console.log("load users clicked");
-
-  axios.get(API_URL + "/users")
-    .then(function (response) {
-      show(response.data);
-    })
-    .catch(function (error) {
-      if (error.response) {
-        show(error.response.data);
-      } else {
-        show({ error: "Could not connect to server" });
-      }
-    });
-}
-
-// UPDATE USERNAME / PASSWORD
-function updateUser() {
-  const id = Number(document.getElementById("updateUserId").value);
-  const username = document.getElementById("updateUsername").value;
-  const password = document.getElementById("updatePassword").value;
-
-  axios.put(API_URL + "/users/" + id, {
-    username: username,
-    password: password
-  })
-    .then(function (response) {
-      show(response.data);
-    })
-    .catch(function (error) {
-      if (error.response) {
-        show(error.response.data);
-      } else {
-        show({ error: "Could not connect to server" });
-      }
-    });
-}
-
-// UPDATE BALANCE
-function updateBalance() {
-  const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
-  const id = Number(document.getElementById("balanceUserId").value);
-  const balance = Number(document.getElementById("newBalance").value);
-
-  if (!loggedUser) {
-    show({ message: "You must login first" });
-    return;
-  }
-
-  axios.put(API_URL + "/users/" + id + "/balance", {
+  axios.post(API_URL + "/rooms", {
     loggedUserId: loggedUser.id,
-    balance: balance
+    name: this.roomName,
+    roomNumber: this.roomNumber,
+    numberOfRooms: Number(this.numberOfRooms),
+    capacity: Number(this.capacity),
+    price: Number(this.price),
+    description: this.description,
+    status: "available",
+    images: []
   })
-    .then(function (response) {
-      const data = response.data;
-
-      if (data.user && data.user.id === loggedUser.id) {
-        localStorage.setItem("loggedUser", JSON.stringify(data.user));
-      }
-
-      show(data);
+    .then(response => {
+      this.show(response.data);
     })
-    .catch(function (error) {
+    .catch(error => {
       if (error.response) {
-        show(error.response.data);
+        this.show(error.response.data);
       } else {
-        show({ error: "Could not connect to server" });
+        this.show({ error: "Could not connect to server" });
       }
     });
-}
+},
 
-// DELETE USER
-function deleteUser() {
-  const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
-  const id = Number(document.getElementById("deleteUserId").value);
+updateRoom: function () {
+  const loggedUser = this.getLoggedUser();
 
   if (!loggedUser) {
-    show({ message: "You must login first" });
+    this.show({ message: "You must login first" });
     return;
   }
 
-  axios.delete(API_URL + "/users/" + id, {
+  axios.put(API_URL + "/rooms/" + this.updateRoomId, {
+    loggedUserId: loggedUser.id,
+    name: this.updateRoomName,
+    price: Number(this.updateRoomPrice),
+    status: this.updateRoomStatus
+  })
+    .then(response => {
+      this.show(response.data);
+    })
+    .catch(error => {
+      if (error.response) {
+        this.show(error.response.data);
+      } else {
+        this.show({ error: "Could not connect to server" });
+      }
+    });
+},
+
+deleteRoom: function () {
+  const loggedUser = this.getLoggedUser();
+
+  if (!loggedUser) {
+    this.show({ message: "You must login first" });
+    return;
+  }
+
+  axios.delete(API_URL + "/rooms/" + this.deleteRoomId, {
     data: {
       loggedUserId: loggedUser.id
     }
   })
-    .then(function (response) {
-      show(response.data);
+    .then(response => {
+      this.show(response.data);
     })
-    .catch(function (error) {
+    .catch(error => {
       if (error.response) {
-        show(error.response.data);
+        this.show(error.response.data);
       } else {
-        show({ error: "Could not connect to server" });
+        this.show({ error: "Could not connect to server" });
       }
     });
-}
+},
+
+selectRoomImage: function (event) {
+  const file = event.target.files[0];
+
+  if (!file) {
+    this.show({ message: "No image selected" });
+    return;
+  }
+
+  this.roomImage = "images/" + file.name;
+
+  this.show({
+    message: "Image selected",
+    imagePath: this.roomImage
+  });
+},
+
+addRoomImage: function () {
+  const loggedUser = this.getLoggedUser();
+
+  if (!loggedUser) {
+    this.show({ message: "You must login first" });
+    return;
+  }
+
+  axios.post(API_URL + "/rooms/" + this.imageRoomId + "/images", {
+    loggedUserId: loggedUser.id,
+    image: this.roomImage
+  })
+    .then(response => {
+      this.show(response.data);
+    })
+    .catch(error => {
+      if (error.response) {
+        this.show(error.response.data);
+      } else {
+        this.show({ error: "Could not connect to server" });
+      }
+    });
+  },
+
+  //reservation Methods
+
+  loadReservations: function () {
+  axios.get(API_URL + "/reservations")
+    .then(response => {
+      this.show(response.data);
+    })
+    .catch(error => {
+      if (error.response) {
+        this.show(error.response.data);
+      } else {
+        this.show({ error: "Could not connect to server" });
+      }
+    });
+},
+
+loadReservationDetails: function () {
+  axios.get(API_URL + "/reservations/details")
+    .then(response => {
+      this.show(response.data);
+    })
+    .catch(error => {
+      if (error.response) {
+        this.show(error.response.data);
+      } else {
+        this.show({ error: "Could not connect to server" });
+      }
+    });
+},
+
+createReservation: function () {
+  const loggedUser = this.getLoggedUser();
+
+  if (!loggedUser) {
+    this.show({ message: "You must login first" });
+    return;
+  }
+
+  axios.post(API_URL + "/reservations", {
+    loggedUserId: loggedUser.id,
+    roomId: Number(this.reservationRoomId),
+    checkIn: this.reservationCheckIn,
+    checkOut: this.reservationCheckOut
+  })
+    .then(response => {
+      const data = response.data;
+
+      if (data.remainingBalance !== undefined) {
+        loggedUser.balance = data.remainingBalance;
+        localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+      }
+
+      this.show(data);
+    })
+    .catch(error => {
+      if (error.response) {
+        this.show(error.response.data);
+      } else {
+        this.show({ error: "Could not connect to server" });
+      }
+    });
+},
+
+cancelReservation: function () {
+  const loggedUser = this.getLoggedUser();
+
+  if (!loggedUser) {
+    this.show({ message: "You must login first" });
+    return;
+  }
+
+  axios.put(API_URL + "/reservations/" + this.cancelReservationId + "/cancel", {
+    loggedUserId: loggedUser.id
+  })
+    .then(response => {
+      const data = response.data;
+
+      if (data.userBalance !== null && data.userBalance !== undefined) {
+        loggedUser.balance = data.userBalance;
+        localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+      }
+
+      this.show(data);
+    })
+    .catch(error => {
+      if (error.response) {
+        this.show(error.response.data);
+      } else {
+        this.show({ error: "Could not connect to server" });
+      }
+    });
+  }
+  }
+});

@@ -12,14 +12,14 @@
       "username": "paula",
       "password": "test123",
       "role": "guest",
-      "balance": 500
+      "balance": 600
     },
     {
       "id": 5,
-      "username": "paul",
-      "password": "test123",
+      "username": "paul paul",
+      "password": "pass123",
       "role": "guest",
-      "balance": 2500
+      "balance": 1700
     },
     {
       "id": 6,
@@ -29,6 +29,48 @@
       "balance": 400
     }
   ],
-  "rooms": [],
-  "reservations": []
+  "rooms": [
+    {
+      "id": 1,
+      "name": "test",
+      "roomNumber": "400",
+      "numberOfRooms": 3,
+      "capacity": 3,
+      "price": 400,
+      "description": "bathroom, kitchen, bedrooms",
+      "status": "available",
+      "images": [
+        "images/user8.jpg"
+      ]
+    }
+  ],
+  "reservations": [
+    {
+      "id": 1,
+      "userId": 5,
+      "roomId": 1,
+      "checkIn": "2026-05-29",
+      "checkOut": "2026-05-30",
+      "totalPrice": 400,
+      "status": "confirmed"
+    },
+    {
+      "id": 2,
+      "userId": 5,
+      "roomId": 1,
+      "checkIn": "2026-06-03",
+      "checkOut": "2026-06-04",
+      "totalPrice": 400,
+      "status": "confirmed"
+    },
+    {
+      "id": 3,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-06-04",
+      "checkOut": "2026-06-05",
+      "totalPrice": 400,
+      "status": "cancelled"
+    }
+  ]
 }

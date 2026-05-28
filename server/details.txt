@@ -41,29 +41,154 @@ http://localhost:8080 or http://localhost:8081
 
 Both must be running at the same time.
 
-5. Current API routes:
+5. Project structure:
+server/
+- server.js
+- database.json
+- models/userModel.js
+- models/roomModel.js
+- models/reservationModel.js
+- controllers/userController.js
+- controllers/clientController.js
+- controllers/roomController.js
+- controllers/reservationController.js
+
+client/
+- index.html
+- js/app.js
+- libs/vue.js
+- libs/axios.js
+
+6. Current API routes:
 POST /signup
 POST /login
 GET /users
 PUT /users/:id
 PUT /users/:id/balance
 DELETE /users/:id
+
 POST /clients/connect
 GET /clients
+
+GET /rooms
+GET /rooms/:id
+POST /rooms
+PUT /rooms/:id
+DELETE /rooms/:id
+POST /rooms/:id/images
+
+GET /reservations
+GET /reservations/details
+POST /reservations
+PUT /reservations/:id/cancel
 
 Example backend URL used in app.js:
 const API_URL = "http://localhost:3000";
 
-6. Data is stored in:
+7. Data is stored in:
 server/database.json
 
-7. Main functions:
+8. Database sections:
+- users
+- rooms
+- reservations
+
+9. Main user functions:
 - User sign up and login.
+- New users are created as guests.
+- New users start with balance 0.
 - User logout and login status check.
 - View all users.
 - Update username and password.
 - Update user balance.
 - Delete account with role-based permission.
+- Store logged user in localStorage.
+
+10. Main client functions: (clients - to check how many clients are connected to the server)
 - Register opened client pages.
 - View connected client count.
-- Store all data in database.json.
+- Store client ID in localStorage.
+- Client visualization is used only for showing opened clients/pages.
+
+11. Main room functions:
+- View all rooms.
+- View one room.
+- Add room as admin.
+- Update room as admin.
+- Delete room as admin.
+- Add image path to a room as admin.
+- Store room data in database.json.
+
+12. Main reservation functions:
+- View all reservations.
+- View reservations with user and room details.
+- Create reservation as guest.
+- Cancel reservation as guest or admin.
+- Store reservation data in database.json.
+
+13. Room availability:
+- Room status is used for general state.
+- Available rooms can be reserved if selected dates are free.
+- Maintenance rooms cannot be reserved.
+- A room should not permanently become reserved after one reservation.
+- Reserved dates are checked using the reservations list.
+
+14. Reservation date logic:
+- The backend checks if selected dates overlap with another confirmed reservation.
+- If dates overlap, the reservation is rejected.
+- Cancelled reservations are ignored by the overlap check.
+- This prevents two users from reserving the same room for the same period.
+
+15. Reservation payment logic:
+- The backend calculates the number of nights.
+- Total price is room price multiplied by number of nights.
+- The user must have enough balance.
+- After reservation, the total price is subtracted from user balance.
+
+16. Roles:
+Admin can:
+- View users.
+- Delete any user.
+- Update any user balance.
+- Add rooms.
+- Update rooms.
+- Delete rooms.
+- Add room images.
+- View reservations.
+- Cancel reservations.
+
+Guest can:
+- Sign up.
+- Login.
+- View rooms.
+- Create reservations.
+- Cancel own reservations.
+- Update own balance.
+- Delete own account.
+
+17. Frontend:
+The frontend uses:
+- Vue.js for v-model, v-on:click, and showing output.
+- Axios for requests to the backend.
+- localStorage for logged user and client ID.
+
+Important script order in index.html:
+<script src="libs/vue.js"></script>
+<script src="libs/axios.js"></script>
+<script src="js/app.js"></script>
+
+18. Future possible improvements:
+- Separate login page.
+- Dashboard after login.
+- My Profile section.
+- Available Rooms section.
+- My Reservations section.
+- Admin Panel section.
+- Calendar for reservations.
+- Disable already reserved dates in calendar.
+- Real image upload with multer.
+- Better CSS styling.
+
+Hard refresh frontend after frontend code changes:
+Ctrl + F5
+

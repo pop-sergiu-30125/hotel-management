@@ -4,36 +4,95 @@
   <title>Hotel Test Client</title>
 </head>
 <body>
-  <h1>Hotel Test Client</h1>
+  <div id="app">
+    <h1>Hotel Test Client</h1>
 
-  <h2>Sign Up</h2>
-  <input id="signupUsername" placeholder="username">
-  <input id="signupPassword" placeholder="password" type="password">
-  <button onclick="signup()">Sign Up</button>
+    <h2>Sign Up</h2>
+    <input v-model="signupUsername" placeholder="username">
+    <input v-model="signupPassword" placeholder="password" type="password">
+    <button v-on:click="signup">Sign Up</button>
 
-  <h2>Login</h2>
-  <input id="loginUsername" placeholder="username">
-  <input id="loginPassword" placeholder="password" type="password">
-  <button onclick="login()">Login</button>
+    <h2>Login</h2>
+    <input v-model="loginUsername" placeholder="username">
+    <input v-model="loginPassword" placeholder="password" type="password">
+    <button v-on:click="login">Login</button>
+    <button v-on:click="logout">Logout</button>
 
-  <button onclick="logout()">Logout</button>
+    <h2>Login Status</h2>
+    <button v-on:click="checkLoginStatus">Check Login Status</button>
 
-  <h2>Users</h2>
-  <button onclick="loadUsers()">Load Users</button>
-  <pre id="output"></pre>
+    <h2>Users</h2>
+    <button v-on:click="loadUsers">Load Users</button>
 
-  <h2>Delete User</h2>
-  <input id="deleteUserId" placeholder="User ID" type="number">
-  <button onclick="deleteUser()">Delete User</button>
+    <h2>Update User</h2>
+    <input v-model="updateUserId" placeholder="User ID" type="number">
+    <input v-model="updateUsername" placeholder="new username">
+    <input v-model="updatePassword" placeholder="new password" type="password">
+    <button v-on:click="updateUser">Update User</button>
 
-  <h2>Login Status</h2>
-  <button onclick="checkLoginStatus()">Check Login Status</button>
+    <h2>Update Balance</h2>
+    <input v-model="balanceUserId" placeholder="User ID" type="number">
+    <input v-model="newBalance" placeholder="New balance" type="number">
+    <button v-on:click="updateBalance">Update Balance</button>
 
-  <h2>Update Balance</h2>
-  <input id="balanceUserId" placeholder="User ID" type="number">
-  <input id="newBalance" placeholder="New balance" type="number">
-  <button onclick="updateBalance()">Update Balance</button>
+    <h2>Delete User</h2>
+    <input v-model="deleteUserId" placeholder="User ID" type="number">
+    <button v-on:click="deleteUser">Delete User</button>
 
+   
+
+
+    <h2>Rooms</h2>
+
+    <button v-on:click="loadRooms">Load Rooms</button>
+
+    <h3>Add Room</h3>
+    <input v-model="roomName" placeholder="Room name">
+    <input v-model="roomNumber" placeholder="Room number">
+    <input v-model="numberOfRooms" placeholder="Number of rooms" type="number">
+    <input v-model="capacity" placeholder="Capacity" type="number">
+    <input v-model="price" placeholder="Price" type="number">
+    <input v-model="description" placeholder="Description">
+    <button v-on:click="addRoom">Add Room</button>
+
+    <h3>Update Room</h3>
+    <input v-model="updateRoomId" placeholder="Room ID" type="number">
+    <input v-model="updateRoomName" placeholder="New room name">
+    <input v-model="updateRoomPrice" placeholder="New price" type="number">
+    <input v-model="updateRoomStatus" placeholder="available/reserved/maintenance">
+    <button v-on:click="updateRoom">Update Room</button>
+
+    <h3>Delete Room</h3>
+    <input v-model="deleteRoomId" placeholder="Room ID" type="number">
+    <button v-on:click="deleteRoom">Delete Room</button>
+
+    <h3>Add Room Image</h3>
+    <input v-model="imageRoomId" placeholder="Room ID" type="number">
+    <input type="file" v-on:change="selectRoomImage">
+    <button v-on:click="addRoomImage">Add Image</button>
+
+
+    <h2>Reservations</h2>
+
+    <button v-on:click="loadReservations">Load Reservations</button>
+    <button v-on:click="loadReservationDetails">Load Reservation Details</button>
+
+    <h3>Create Reservation</h3>
+    <input v-model="reservationRoomId" placeholder="Room ID" type="number">
+    <input v-model="reservationCheckIn" type="date">
+    <input v-model="reservationCheckOut" type="date">
+    <button v-on:click="createReservation">Create Reservation</button>
+
+    <h3>Cancel Reservation</h3>
+    <input v-model="cancelReservationId" placeholder="Reservation ID" type="number">
+    <button v-on:click="cancelReservation">Cancel Reservation</button>
+
+     <h2>Output</h2>
+    <pre>{{ output }}</pre>
+    
+  </div>
+
+  <script src="libs/vue.js"></script>
   <script src="libs/axios.js"></script>
   <script src="js/app.js"></script>
 </body>
