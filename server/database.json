@@ -5,28 +5,36 @@
       "username": "admin",
       "password": "admin123",
       "role": "admin",
-      "balance": 0
+      "balance": 0,
+      "email": "",
+      "profilePhoto": ""
     },
     {
       "id": 4,
       "username": "paula",
       "password": "test123",
       "role": "guest",
-      "balance": 600
+      "balance": 1100,
+      "email": "paula@app.com",
+      "profilePhoto": ""
     },
     {
       "id": 5,
       "username": "paul paul",
       "password": "pass123",
       "role": "guest",
-      "balance": 1700
+      "balance": 1700,
+      "email": "",
+      "profilePhoto": ""
     },
     {
       "id": 6,
       "username": "maria",
       "password": "pass123",
       "role": "guest",
-      "balance": 400
+      "balance": 400,
+      "email": "",
+      "profilePhoto": ""
     }
   ],
   "rooms": [
@@ -71,6 +79,15 @@
       "checkOut": "2026-06-05",
       "totalPrice": 400,
       "status": "cancelled"
+    }
+  ],
+  "balanceRequests": [
+    {
+      "id": 1,
+      "userId": 4,
+      "amount": 500,
+      "status": "approved",
+      "createdAt": "5/28/2026, 11:53:22 AM"
     }
   ]
 }

@@ -39,6 +39,10 @@
     <input v-model="deleteUserId" placeholder="User ID" type="number">
     <button v-on:click="deleteUser">Delete User</button>
 
+    <h2>Update Profile</h2>
+    <input v-model="profileEmail" placeholder="Email">
+    <input v-model="profilePhoto" placeholder="Profile photo path">
+    <button v-on:click="updateProfile">Update Profile</button>
    
 
 
@@ -86,6 +90,20 @@
     <h3>Cancel Reservation</h3>
     <input v-model="cancelReservationId" placeholder="Reservation ID" type="number">
     <button v-on:click="cancelReservation">Cancel Reservation</button>
+
+    <h2>Balance Requests</h2>
+
+    <h3>Request Balance</h3>
+    <input v-model="balanceRequestAmount" placeholder="Amount" type="number">
+    <button v-on:click="createBalanceRequest">Request Balance</button>
+
+    <h3>Admin Balance Requests</h3>
+    <button v-on:click="loadBalanceRequests">Load Balance Requests</button>
+
+    <input v-model="balanceRequestId" placeholder="Request ID" type="number">
+    <button v-on:click="approveBalanceRequest">Approve Request</button>
+    <button v-on:click="rejectBalanceRequest">Reject Request</button>
+
 
      <h2>Output</h2>
     <pre>{{ output }}</pre>

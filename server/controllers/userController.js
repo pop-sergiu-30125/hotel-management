@@ -1,54 +1,43 @@
-function publicUser(user) {
-  return {
-    id: user.id,
-    username: user.username,
-    role: user.role,
-    balance: user.balance
-  };
-}
+const { createUser, publicUser } = require("../models/userModel");
 
 function userController(app, readDatabase, writeDatabase, getNextId) {
   // SIGN UP
   app.post("/signup", function (req, res) {
-    const db = readDatabase();
+  const db = readDatabase();
 
-    const username = req.body.username;
-    const password = req.body.password;
-    const role = "guest";
-    const balance = 0;
+  const username = req.body.username;
+  const password = req.body.password;
 
-    if (!username || !password) {
-      return res.status(400).json({
-        message: "Username and password are required"
-      });
-    }
-
-    const existingUser = db.users.find(function (user) {
-      return user.username === username;
+  if (!username || !password) {
+    return res.status(400).json({
+      message: "Username and password are required"
     });
+  }
 
-    if (existingUser) {
-      return res.status(409).json({
-        message: "Username already exists"
-      });
-    }
-
-    const newUser = {
-      id: getNextId(db.users),
-      username: username,
-      password: password,
-      role: role,
-      balance: Number(balance)
-    };
-
-    db.users.push(newUser);
-    writeDatabase(db);
-
-    res.status(201).json({
-      message: "User created successfully",
-      user: publicUser(newUser)
-    });
+  const existingUser = db.users.find(function (user) {
+    return user.username === username;
   });
+
+  if (existingUser) {
+    return res.status(409).json({
+      message: "Username already exists"
+    });
+  }
+
+  const newUser = createUser(
+    getNextId(db.users),
+    username,
+    password
+  );
+
+  db.users.push(newUser);
+  writeDatabase(db);
+
+  res.status(201).json({
+    message: "User created successfully",
+    user: publicUser(newUser)
+  });
+});
 
   // LOGIN
   app.post("/login", function (req, res) {
@@ -83,36 +72,44 @@ function userController(app, readDatabase, writeDatabase, getNextId) {
   });
 
   // UPDATE USER
-  app.put("/users/:id", function (req, res) {
-    const db = readDatabase();
+app.put("/users/:id", function (req, res) {
+  const db = readDatabase();
 
-    const id = Number(req.params.id);
+  const id = Number(req.params.id);
 
-    const user = db.users.find(function (user) {
-      return user.id === id;
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found"
-      });
-    }
-
-    if (req.body.username !== undefined) {
-      user.username = req.body.username;
-    }
-
-    if (req.body.password !== undefined) {
-      user.password = req.body.password;
-    }
-
-    writeDatabase(db);
-
-    res.json({
-      message: "User updated successfully",
-      user: publicUser(user)
-    });
+  const user = db.users.find(function (user) {
+    return user.id === id;
   });
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found"
+    });
+  }
+
+  if (req.body.username !== undefined) {
+    user.username = req.body.username;
+  }
+
+  if (req.body.password !== undefined) {
+    user.password = req.body.password;
+  }
+
+  if (req.body.email !== undefined) {
+    user.email = req.body.email;
+  }
+
+  if (req.body.profilePhoto !== undefined) {
+    user.profilePhoto = req.body.profilePhoto;
+  }
+
+  writeDatabase(db);
+
+  res.json({
+    message: "User updated successfully",
+    user: publicUser(user)
+        });
+});
 
   // DELETE USER
   app.delete("/users/:id", function (req, res) {
@@ -156,6 +153,7 @@ function userController(app, readDatabase, writeDatabase, getNextId) {
     res.json({
       message: "User deleted successfully"
     });
+
   });
 
   // UPDATE BALANCE

@@ -6,6 +6,7 @@ const userController = require("./controllers/userController");
 const clientController = require("./controllers/clientController");
 const roomController = require("./controllers/roomController");
 const reservationController = require("./controllers/reservationController");
+const balanceRequestController = require("./controllers/balanceRequestController");
 
 const app = express();
 const PORT = 3000;
@@ -39,6 +40,7 @@ userController(app, readDatabase, writeDatabase, getNextId);
 clientController(app, connectedClients);
 roomController(app, readDatabase, writeDatabase, getNextId);
 reservationController(app, readDatabase, writeDatabase, getNextId);
+balanceRequestController(app, readDatabase, writeDatabase, getNextId);
 
 app.listen(PORT, function () {
   console.log("Server running on http://localhost:" + PORT);
