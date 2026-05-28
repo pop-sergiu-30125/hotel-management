@@ -88,6 +88,24 @@
       "checkIn": "2026-05-27",
       "checkOut": "2026-05-28",
       "totalPrice": 400,
+      "status": "cancelled"
+    },
+    {
+      "id": 6,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-06-19",
+      "checkOut": "2026-06-20",
+      "totalPrice": 400,
+      "status": "cancelled"
+    },
+    {
+      "id": 7,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-06-19",
+      "checkOut": "2026-06-20",
+      "totalPrice": 400,
       "status": "confirmed"
     }
   ],

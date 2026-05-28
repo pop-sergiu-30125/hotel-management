@@ -56,6 +56,10 @@ var app = new Vue({
 
   created: function () {
     this.registerClient();
+
+    this.reservationRoomId = localStorage.getItem("reservationRoomId") || ""; //for second requirement for client app
+  this.reservationCheckIn = localStorage.getItem("reservationCheckIn") || "";
+  this.reservationCheckOut = localStorage.getItem("reservationCheckOut") || "";
   },
 
   methods: {
@@ -65,6 +69,12 @@ var app = new Vue({
 
     getLoggedUser: function () {
       return JSON.parse(localStorage.getItem("loggedUser"));
+    },
+
+    saveSelections: function () {
+      localStorage.setItem("reservationRoomId", this.reservationRoomId);
+      localStorage.setItem("reservationCheckIn", this.reservationCheckIn);
+      localStorage.setItem("reservationCheckOut", this.reservationCheckOut);
     },
 
     ...clientMethods,

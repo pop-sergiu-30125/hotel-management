@@ -82,9 +82,9 @@
     <button v-on:click="loadReservationDetails">Load Reservation Details</button>
 
     <h3>Create Reservation</h3>
-    <input v-model="reservationRoomId" placeholder="Room ID" type="number">
-    <input v-model="reservationCheckIn" type="date">
-    <input v-model="reservationCheckOut" type="date">
+<input v-model="reservationRoomId" v-on:change="saveSelections" placeholder="Room ID" type="number"> //client, second
+<input v-model="reservationCheckIn" v-on:change="saveSelections" type="date">
+<input v-model="reservationCheckOut" v-on:change="saveSelections" type="date">
     <button v-on:click="createReservation">Create Reservation</button>
 
     <h3>Cancel Reservation</h3>
