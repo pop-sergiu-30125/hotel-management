@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
+const path = require("path");
 
 const userController = require("./controllers/userController");
 const clientController = require("./controllers/clientController");
@@ -14,6 +15,7 @@ const DB_FILE = "./database.json";
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 let connectedClients = [];
 

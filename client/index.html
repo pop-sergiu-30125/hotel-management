@@ -41,10 +41,11 @@
 
     <h2>Update Profile</h2>
     <input v-model="profileEmail" placeholder="Email">
-    <input v-model="profilePhoto" placeholder="Profile photo path">
     <button v-on:click="updateProfile">Update Profile</button>
    
-
+    <h3>Upload Profile Photo</h3>
+    <input type="file" v-on:change="selectProfilePhoto">
+    <button v-on:click="uploadProfilePhoto">Upload Profile Photo</button>
 
     <h2>Rooms</h2>
 
@@ -71,10 +72,9 @@
     <button v-on:click="deleteRoom">Delete Room</button>
 
     <h3>Add Room Image</h3>
-    <input v-model="imageRoomId" placeholder="Room ID" type="number">
-    <input type="file" v-on:change="selectRoomImage">
-    <button v-on:click="addRoomImage">Add Image</button>
-
+<input v-model="imageRoomId" placeholder="Room ID" type="number">
+<input type="file" v-on:change="selectRoomImage">
+<button v-on:click="uploadRoomImage">Upload Room Image</button>
 
     <h2>Reservations</h2>
 
@@ -111,7 +111,15 @@
   </div>
 
   <script src="libs/vue.js"></script>
-  <script src="libs/axios.js"></script>
-  <script src="js/app.js"></script>
+<script src="libs/axios.js"></script>
+
+<script src="js/config.js"></script>
+<script src="js/clientMethods.js"></script>
+<script src="js/userMethods.js"></script>
+<script src="js/roomMethods.js"></script>
+<script src="js/reservationMethods.js"></script>
+<script src="js/balanceRequestMethods.js"></script>
+
+<script src="js/app.js"></script>
 </body>
 </html>

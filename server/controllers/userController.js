@@ -1,4 +1,22 @@
+const multer = require("multer");
+const path = require("path");
 const { createUser, publicUser } = require("../models/userModel");
+
+//added for image stuff
+const profilePhotoStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/profiles");
+  },
+
+  filename: function (req, file, cb) {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  }
+});
+
+const uploadProfilePhoto = multer({
+  storage: profilePhotoStorage
+});
 
 function userController(app, readDatabase, writeDatabase, getNextId) {
   // SIGN UP
@@ -205,6 +223,57 @@ app.put("/users/:id", function (req, res) {
       user: publicUser(userToUpdate)
     });
   });
+
+  // UPLOAD PROFILE PHOTO
+app.post("/users/:id/profile-photo", uploadProfilePhoto.single("image"), function (req, res) {
+  const db = readDatabase();
+
+  const userId = Number(req.params.id);
+  const loggedUserId = Number(req.body.loggedUserId);
+
+  const loggedUser = db.users.find(function (user) {
+    return user.id === loggedUserId;
+  });
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      message: "You must be logged in"
+    });
+  }
+
+  if (loggedUser.role !== "admin" && loggedUser.id !== userId) {
+    return res.status(403).json({
+      message: "You can update only your own profile photo"
+    });
+  }
+
+  const user = db.users.find(function (user) {
+    return user.id === userId;
+  });
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found"
+    });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({
+      message: "No image selected"
+    });
+  }
+
+  const imagePath = "uploads/profiles/" + req.file.filename;
+
+  user.profilePhoto = imagePath;
+
+  writeDatabase(db);
+
+  res.json({
+    message: "Profile photo uploaded successfully",
+    user: publicUser(user)
+  });
+});
 }
 
 module.exports = userController;

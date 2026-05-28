@@ -16,7 +16,7 @@
       "role": "guest",
       "balance": 1100,
       "email": "paula@app.com",
-      "profilePhoto": ""
+      "profilePhoto": "uploads/profiles/1779960573054-user8.jpg"
     },
     {
       "id": 5,
@@ -24,15 +24,6 @@
       "password": "pass123",
       "role": "guest",
       "balance": 1700,
-      "email": "",
-      "profilePhoto": ""
-    },
-    {
-      "id": 6,
-      "username": "maria",
-      "password": "pass123",
-      "role": "guest",
-      "balance": 400,
       "email": "",
       "profilePhoto": ""
     }
@@ -48,7 +39,8 @@
       "description": "bathroom, kitchen, bedrooms",
       "status": "available",
       "images": [
-        "images/user8.jpg"
+        "images/user8.jpg",
+        "uploads/rooms/1779961065987-user10.jpg"
       ]
     }
   ],

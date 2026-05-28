@@ -6,11 +6,19 @@ Check with:
 node -v
 npm -v
 
-2. Start backend:
+2. Install backend packages:
 Open terminal in the server folder:
 
 cd server
 npm install
+npm install multer
+
+Multer is used for saving uploaded images into folders on the server.
+
+3. Start backend:
+Open terminal in the server folder:
+
+cd server
 node server.js
 
 Expected message:
@@ -19,7 +27,7 @@ Server running on http://localhost:3000
 Test in browser:
 http://localhost:3000/
 
-3. Start frontend:
+4. Start frontend:
 Open another terminal in the client folder:
 
 cd client
@@ -32,7 +40,7 @@ http://localhost:8080/
 or sometimes:
 http://localhost:8081/
 
-4. Important:
+5. Important:
 Backend runs on:
 http://localhost:3000
 
@@ -41,17 +49,21 @@ http://localhost:8080 or http://localhost:8081
 
 Both must be running at the same time.
 
-5. Project structure:
+6. Project structure:
 server/
 - server.js
 - database.json
+- uploads/rooms
+- uploads/profiles
 - models/userModel.js
 - models/roomModel.js
 - models/reservationModel.js
+- models/balanceRequestModel.js
 - controllers/userController.js
 - controllers/clientController.js
 - controllers/roomController.js
 - controllers/reservationController.js
+- controllers/balanceRequestController.js
 
 client/
 - index.html
@@ -59,13 +71,14 @@ client/
 - libs/vue.js
 - libs/axios.js
 
-6. Current API routes:
+7. Current API routes:
 POST /signup
 POST /login
 GET /users
 PUT /users/:id
 PUT /users/:id/balance
 DELETE /users/:id
+POST /users/:id/profile-photo
 
 POST /clients/connect
 GET /clients
@@ -82,70 +95,105 @@ GET /reservations/details
 POST /reservations
 PUT /reservations/:id/cancel
 
+POST /balance-requests
+GET /balance-requests
+PUT /balance-requests/:id/approve
+PUT /balance-requests/:id/reject
+
 Example backend URL used in app.js:
 const API_URL = "http://localhost:3000";
 
-7. Data is stored in:
+8. Data is stored in:
 server/database.json
 
-8. Database sections:
+9. Database sections:
 - users
 - rooms
 - reservations
+- balanceRequests
 
-9. Main user functions:
+10. Main user functions:
 - User sign up and login.
 - New users are created as guests.
 - New users start with balance 0.
 - User logout and login status check.
 - View all users.
 - Update username and password.
+- Update email.
+- Upload profile photo.
 - Update user balance.
 - Delete account with role-based permission.
 - Store logged user in localStorage.
 
-10. Main client functions: (clients - to check how many clients are connected to the server)
+11. Main client functions: (clients - to check how many clients are connected to the server)
 - Register opened client pages.
 - View connected client count.
 - Store client ID in localStorage.
 - Client visualization is used only for showing opened clients/pages.
 
-11. Main room functions:
+12. Main room functions:
 - View all rooms.
 - View one room.
 - Add room as admin.
 - Update room as admin.
 - Delete room as admin.
-- Add image path to a room as admin.
+- Upload room images as admin.
 - Store room data in database.json.
+- Store room image files in server/uploads/rooms.
 
-12. Main reservation functions:
+13. Main reservation functions:
 - View all reservations.
 - View reservations with user and room details.
 - Create reservation as guest.
 - Cancel reservation as guest or admin.
 - Store reservation data in database.json.
 
-13. Room availability:
+14. Main balance request functions:
+- Guest can request more balance.
+- Admin can view balance requests.
+- Admin can approve balance requests.
+- Admin can reject balance requests.
+- Approved requests increase the user's balance.
+- Rejected requests do not change the user's balance.
+- Balance requests are stored in database.json.
+
+15. Room availability:
 - Room status is used for general state.
 - Available rooms can be reserved if selected dates are free.
 - Maintenance rooms cannot be reserved.
 - A room should not permanently become reserved after one reservation.
 - Reserved dates are checked using the reservations list.
 
-14. Reservation date logic:
+16. Reservation date logic:
 - The backend checks if selected dates overlap with another confirmed reservation.
 - If dates overlap, the reservation is rejected.
 - Cancelled reservations are ignored by the overlap check.
 - This prevents two users from reserving the same room for the same period.
 
-15. Reservation payment logic:
+17. Reservation payment logic:
 - The backend calculates the number of nights.
 - Total price is room price multiplied by number of nights.
 - The user must have enough balance.
 - After reservation, the total price is subtracted from user balance.
 
-16. Roles:
+18. Image upload logic:
+- Multer is used for real image upload.
+- Room images are saved in:
+server/uploads/rooms
+
+- Profile photos are saved in:
+server/uploads/profiles
+
+- The database stores only the image path.
+- The actual image file is saved in the uploads folder.
+
+In server.js, uploaded images are made accessible with:
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+Example image URL:
+http://localhost:3000/uploads/rooms/image-name.jpg
+
+19. Roles:
 Admin can:
 - View users.
 - Delete any user.
@@ -153,9 +201,12 @@ Admin can:
 - Add rooms.
 - Update rooms.
 - Delete rooms.
-- Add room images.
+- Upload room images.
 - View reservations.
 - Cancel reservations.
+- View balance requests.
+- Approve balance requests.
+- Reject balance requests.
 
 Guest can:
 - Sign up.
@@ -163,13 +214,16 @@ Guest can:
 - View rooms.
 - Create reservations.
 - Cancel own reservations.
-- Update own balance.
+- Request more balance.
+- Update own email.
+- Upload own profile photo.
 - Delete own account.
 
-17. Frontend:
+20. Frontend:
 The frontend uses:
 - Vue.js for v-model, v-on:click, and showing output.
 - Axios for requests to the backend.
+- FormData for uploading image files.
 - localStorage for logged user and client ID.
 
 Important script order in index.html:
@@ -177,7 +231,7 @@ Important script order in index.html:
 <script src="libs/axios.js"></script>
 <script src="js/app.js"></script>
 
-18. Future possible improvements:
+21. Future possible improvements:
 - Separate login page.
 - Dashboard after login.
 - My Profile section.
@@ -186,9 +240,43 @@ Important script order in index.html:
 - Admin Panel section.
 - Calendar for reservations.
 - Disable already reserved dates in calendar.
-- Real image upload with multer.
 - Better CSS styling.
+- Better frontend layout.
+- Password hashing.
+
+22. Useful commands:
+Restart backend after backend code changes:
+Ctrl + C
+node server.js
 
 Hard refresh frontend after frontend code changes:
 Ctrl + F5
 
+Open browser console:
+F12
+or
+Ctrl + Shift + I
+
+23. Common problems:
+If frontend buttons do not work:
+- Check browser console.
+- Make sure backend is running.
+- Make sure frontend is running.
+- Make sure app.js path is correct.
+- Make sure Vue is loaded before app.js.
+- Make sure Axios is loaded before app.js.
+
+If backend routes do not work:
+- Restart backend.
+- Check server.js imports.
+- Check controller file names.
+- Check controller folder path.
+- Check database.json format.
+
+If image upload does not work:
+- Make sure multer is installed.
+- Make sure server/uploads/rooms exists.
+- Make sure server/uploads/profiles exists.
+- Make sure the route uses uploadRoomImage.single("image") or uploadProfilePhoto.single("image").
+- Make sure frontend uses FormData.
+- Make sure backend was restarted.

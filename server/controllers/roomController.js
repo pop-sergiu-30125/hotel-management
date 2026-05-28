@@ -1,4 +1,22 @@
+const multer = require("multer");
+const path = require("path");
+
 const { createRoom } = require("../models/roomModel");
+
+const roomImageStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/rooms");
+  },
+
+  filename: function (req, file, cb) {
+    const uniqueName = Date.now() + "-" + file.originalname;
+    cb(null, uniqueName);
+  }
+});
+
+const uploadRoomImage = multer({
+  storage: roomImageStorage
+});
 
 function roomController(app, readDatabase, writeDatabase, getNextId) {
   // GET ALL ROOMS
@@ -162,53 +180,63 @@ function roomController(app, readDatabase, writeDatabase, getNextId) {
     });
   });
 
-  // ADD IMAGE TO ROOM - admin only
-  app.post("/rooms/:id/images", function (req, res) {
-    const db = readDatabase();
+ // ADD IMAGE TO ROOM - admin only
+app.post("/rooms/:id/images", uploadRoomImage.single("image"), function (req, res) {
+  const db = readDatabase();
 
-    const roomId = Number(req.params.id);
-    const loggedUserId = Number(req.body.loggedUserId);
-    const image = req.body.image;
+  const roomId = Number(req.params.id);
+  const loggedUserId = Number(req.body.loggedUserId);
 
-    const loggedUser = db.users.find(function (user) {
-      return user.id === loggedUserId;
-    });
-
-    if (!loggedUser || loggedUser.role !== "admin") {
-      return res.status(403).json({
-        message: "Only admin can add room images"
-      });
-    }
-
-    const room = db.rooms.find(function (room) {
-      return room.id === roomId;
-    });
-
-    if (!room) {
-      return res.status(404).json({
-        message: "Room not found"
-      });
-    }
-
-    if (!image) {
-      return res.status(400).json({
-        message: "Image path is required"
-      });
-    }
-
-    if (!room.images) {
-      room.images = [];
-    }
-
-    room.images.push(image);
-
-    writeDatabase(db);
-
-    res.json({
-      message: "Image added successfully",
-      room: room
-    });
+  const loggedUser = db.users.find(function (user) {
+    return user.id === loggedUserId;
   });
+
+  if (!loggedUser || loggedUser.role !== "admin") {
+    return res.status(403).json({
+      message: "Only admin can add room images"
+    });
+  }
+
+  const room = db.rooms.find(function (room) {
+    return room.id === roomId;
+  });
+
+  if (!room) {
+    return res.status(404).json({
+      message: "Room not found"
+    });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({
+      message: "No image selected"
+    });
+  }
+
+ //limit 5 images
+ if (!room.images) {
+  room.images = [];
+}
+
+if (room.images.length >= 5) {
+  return res.status(400).json({
+    message: "A room can have maximum 5 images"
+  });
+}
+
+const imagePath = "uploads/rooms/" + req.file.filename;
+
+room.images.push(imagePath);
+
+
+  writeDatabase(db);
+
+  res.json({
+    message: "Room image uploaded successfully",
+    image: imagePath,
+    room: room
+  });
+});
 }
 
 module.exports = roomController;
