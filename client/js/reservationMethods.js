@@ -61,32 +61,38 @@ const reservationMethods = {
   },
 
   cancelReservation: function () {
-    const loggedUser = this.getLoggedUser();
+  const loggedUser = this.getLoggedUser();
 
-    if (!loggedUser) {
-      this.show({ message: "You must login first" });
-      return;
-    }
-
-    axios.put(API_URL + "/reservations/" + this.cancelReservationId + "/cancel", {
-      loggedUserId: loggedUser.id
-    })
-      .then(response => {
-        const data = response.data;
-
-        if (data.userBalance !== null && data.userBalance !== undefined) {
-          loggedUser.balance = data.userBalance;
-          localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
-        }
-
-        this.show(data);
-      })
-      .catch(error => {
-        if (error.response) {
-          this.show(error.response.data);
-        } else {
-          this.show({ error: "Could not connect to server" });
-        }
-      });
+  if (!loggedUser) {
+    this.show({ message: "You must login first" });
+    return;
   }
+
+  const requestBody = {
+    loggedUserId: loggedUser.id
+  };
+
+  if (!this.useRealCurrentDate) {
+    requestBody.currentDate = this.customCancelDate;
+  }
+
+  axios.put(API_URL + "/reservations/" + this.cancelReservationId + "/cancel", requestBody)
+    .then(response => {
+      const data = response.data;
+
+      if (data.userBalance !== null && data.userBalance !== undefined) {
+        loggedUser.balance = data.userBalance;
+        localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+      }
+
+      this.show(data);
+    })
+    .catch(error => {
+      if (error.response) {
+        this.show(error.response.data);
+      } else {
+        this.show({ error: "Could not connect to server" });
+      }
+    });
+}
 };

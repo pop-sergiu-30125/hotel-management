@@ -14,7 +14,7 @@
       "username": "paula",
       "password": "test123",
       "role": "guest",
-      "balance": 1100,
+      "balance": 700,
       "email": "paula@app.com",
       "profilePhoto": "uploads/profiles/1779960573054-user8.jpg"
     },
@@ -71,6 +71,24 @@
       "checkOut": "2026-06-05",
       "totalPrice": 400,
       "status": "cancelled"
+    },
+    {
+      "id": 4,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-05-23",
+      "checkOut": "2026-05-24",
+      "totalPrice": 400,
+      "status": "cancelled"
+    },
+    {
+      "id": 5,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-05-27",
+      "checkOut": "2026-05-28",
+      "totalPrice": 400,
+      "status": "confirmed"
     }
   ],
   "balanceRequests": [

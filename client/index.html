@@ -104,9 +104,26 @@
     <button v-on:click="approveBalanceRequest">Approve Request</button>
     <button v-on:click="rejectBalanceRequest">Reject Request</button>
 
+    <h3>Cancel Reservation</h3>
+<input v-model="cancelReservationId" placeholder="Reservation ID" type="number">
 
-     <h2>Output</h2>
-    <pre>{{ output }}</pre>
+<label>
+  <input type="checkbox" v-model="useRealCurrentDate">
+  Use real current date/time
+</label>
+
+<br>
+
+<input
+  v-if="!useRealCurrentDate"
+  v-model="customCancelDate"
+  type="datetime-local"
+>
+
+<button v-on:click="cancelReservation">Cancel Reservation</button>
+
+       <h2>Output</h2>
+      <pre>{{ output }}</pre>
     
   </div>
 

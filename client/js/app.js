@@ -47,6 +47,8 @@ var app = new Vue({
     reservationCheckOut: "",
 
     cancelReservationId: "",
+    useRealCurrentDate: true,
+    customCancelDate: "",
 
     selectedRoomImage: null,
     selectedProfilePhoto: null

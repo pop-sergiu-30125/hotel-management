@@ -147,78 +147,78 @@ function reservationController(app, readDatabase, writeDatabase, getNextId) {
 
   // CANCEL RESERVATION
   app.put("/reservations/:id/cancel", function (req, res) {
-    const db = readDatabase();
+  const db = readDatabase();
 
-    const reservationId = Number(req.params.id);
-    const loggedUserId = Number(req.body.loggedUserId);
+  const reservationId = Number(req.params.id);
+  const loggedUserId = Number(req.body.loggedUserId);
 
-    const loggedUser = db.users.find(function (user) {
-      return user.id === loggedUserId;
-    });
-
-    if (!loggedUser) {
-      return res.status(401).json({
-        message: "You must be logged in"
-      });
-    }
-
-    const reservation = db.reservations.find(function (reservation) {
-      return reservation.id === reservationId;
-    });
-
-    if (!reservation) {
-      return res.status(404).json({
-        message: "Reservation not found"
-      });
-    }
-
-    if (reservation.status === "cancelled") {
-      return res.status(400).json({
-        message: "Reservation is already cancelled"
-      });
-    }
-
-    if (loggedUser.role !== "admin" && loggedUser.id !== reservation.userId) {
-      return res.status(403).json({
-        message: "You can cancel only your own reservation"
-      });
-    }
-
-    const user = db.users.find(function (user) {
-      return user.id === reservation.userId;
-    });
-
-    const room = db.rooms.find(function (room) {
-      return room.id === reservation.roomId;
-    });
-
-    const now = new Date();
-    const refundLimit = new Date(reservation.checkIn + "T20:00:00");
-
-    let refunded = false;
-
-    if (now < refundLimit && user) {
-      user.balance = user.balance + reservation.totalPrice;
-      refunded = true;
-    }
-
-    reservation.status = "cancelled";
-
-    //if (room) {
-    //  room.status = "available";
-    //}
-
-    writeDatabase(db);
-
-    res.json({
-      message: refunded
-        ? "Reservation cancelled and refunded"
-        : "Reservation cancelled without refund",
-      refunded: refunded,
-      reservation: reservation,
-      userBalance: user ? user.balance : null
-    });
+  const loggedUser = db.users.find(function (user) {
+    return user.id === loggedUserId;
   });
+
+  if (!loggedUser) {
+    return res.status(401).json({
+      message: "You must be logged in"
+    });
+  }
+
+  const reservation = db.reservations.find(function (reservation) {
+    return reservation.id === reservationId;
+  });
+
+  if (!reservation) {
+    return res.status(404).json({
+      message: "Reservation not found"
+    });
+  }
+
+  if (reservation.status === "cancelled") {
+    return res.status(400).json({
+      message: "Reservation is already cancelled"
+    });
+  }
+
+  if (loggedUser.role !== "admin" && loggedUser.id !== reservation.userId) {
+    return res.status(403).json({
+      message: "You can cancel only your own reservation"
+    });
+  }
+
+  const now = req.body.currentDate
+    ? new Date(req.body.currentDate)
+    : new Date();
+
+  const checkInDate = new Date(reservation.checkIn);
+
+  const cancelLimit = new Date(checkInDate);
+  cancelLimit.setDate(cancelLimit.getDate() - 2);
+
+  if (now > cancelLimit) {
+    return res.status(400).json({
+      message: "Reservation can be cancelled only at least 2 days before check-in",
+      currentDate: now,
+      cancelLimit: cancelLimit
+    });
+  }
+
+  const user = db.users.find(function (user) {
+    return user.id === reservation.userId;
+  });
+
+  if (user) {
+    user.balance = user.balance + reservation.totalPrice;
+  }
+
+  reservation.status = "cancelled";
+
+  writeDatabase(db);
+
+  res.json({
+    message: "Reservation cancelled and refunded",
+    reservation: reservation,
+    userBalance: user ? user.balance : null
+  });
+});
 }
 
 module.exports = reservationController;
