@@ -75,6 +75,7 @@ var app = new Vue({
     rooms: [],
     usersList: [],
     reservationsList: [],
+    myReservations: [],
     },
 
   created: function () {
@@ -89,6 +90,7 @@ var app = new Vue({
     this.loadRooms();
     this.loadUsers();
     this.loadReservations();
+    this.loadMyReservations();
 
   },
 

@@ -1,4 +1,17 @@
 const reservationMethods = {
+  loadMyReservations: function () {
+    const loggedUser = this.getLoggedUser();
+    if (!loggedUser) return;
+
+    axios.get(API_URL + "/users/" + loggedUser.id + "/reservations")
+      .then(response => {
+        this.myReservations = response.data;
+      })
+      .catch(error => {
+        console.error("Failed to load user reservations", error);
+      });
+  },
+
   loadReservations: function () {
     axios.get(API_URL + "/reservations")
       .then(response => {
@@ -54,6 +67,7 @@ const reservationMethods = {
         // so the user can easily make another identical reservation if needed.
 
         this.show(data);
+        this.loadMyReservations();
       })
       .catch(error => {
         if (error.response) {
@@ -91,6 +105,7 @@ const reservationMethods = {
 
           this.show(data);
           this.loadReservations();
+          this.loadMyReservations();
         })
         .catch(error => {
           if (error.response) {
