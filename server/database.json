@@ -1,0 +1,309 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin",
+      "balance": 200,
+      "email": "",
+      "profilePhoto": ""
+    },
+    {
+      "id": 4,
+      "username": "paula",
+      "password": "test123",
+      "role": "guest",
+      "balance": 100,
+      "email": "paulica@gmail.com",
+      "profilePhoto": "uploads/profiles/1780089426311-mate4.png"
+    },
+    {
+      "id": 5,
+      "username": "paul paul",
+      "password": "pass123",
+      "role": "guest",
+      "balance": 0,
+      "email": "paulpaul2@hotel.ro",
+      "profilePhoto": ""
+    }
+  ],
+  "rooms": [
+    {
+      "id": 1,
+      "name": "Luxury Suite",
+      "roomNumber": "101",
+      "numberOfRooms": 3,
+      "capacity": 2,
+      "price": 400,
+      "description": "Elegant suite with king-size bed, luxury bathroom and city view.",
+      "status": "available",
+      "video": "uploads/videos/room1.mp4",
+      "images": [
+        "uploads/rooms/room1.webp"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Family Room",
+      "roomNumber": "202",
+      "numberOfRooms": 5,
+      "capacity": 4,
+      "price": 300,
+      "description": "Perfect room for families with spacious living area.",
+      "status": "available",
+      "video": "uploads/videos/room21.mp4",
+      "images": [
+        "uploads/rooms/room2.webp"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Presidential Suite",
+      "roomNumber": "301",
+      "numberOfRooms": 1,
+      "capacity": 4,
+      "price": 1200,
+      "description": "Our most luxurious suite with private lounge and panoramic view.",
+      "status": "available",
+      "video": "uploads/videos/room3.mp4",
+      "images": [
+        "uploads/rooms/room3.webp"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Deluxe Room",
+      "roomNumber": "401",
+      "numberOfRooms": 6,
+      "capacity": 2,
+      "price": 250,
+      "description": "Modern room with premium furniture and balcony.",
+      "status": "available",
+      "video": "uploads/videos/room4.mp4",
+      "images": [
+        "uploads/rooms/room4.webp"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Honeymoon Suite",
+      "roomNumber": "501",
+      "numberOfRooms": 2,
+      "capacity": 2,
+      "price": 650,
+      "description": "Romantic suite designed for unforgettable moments.",
+      "status": "available",
+      "video": "uploads/videos/room5.mp4",
+      "images": [
+        "uploads/rooms/room5.webp"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Penthouse Suite",
+      "roomNumber": "601",
+      "numberOfRooms": 1,
+      "capacity": 6,
+      "price": 1800,
+      "description": "Exclusive penthouse with rooftop terrace and private jacuzzi.",
+      "status": "available",
+      "video": "uploads/videos/room6.mp4",
+      "images": [
+        "uploads/rooms/room6.webp"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Double Room",
+      "roomNumber": "204",
+      "numberOfRooms": 2,
+      "capacity": 2,
+      "price": 375,
+      "description": "Tailored room for couples (one double/queen)",
+      "status": "available",
+      "images": [
+        "uploads/rooms/1780139671091-2690578.jpg"
+      ],
+      "video": "uploads/videos/1780139672074-10135236-uhd_3840_2160_25fps.mp4"
+    }
+  ],
+  "reservations": [
+    {
+      "id": 1,
+      "userId": 5,
+      "roomId": 1,
+      "checkIn": "2026-05-29",
+      "checkOut": "2026-05-30",
+      "totalPrice": 400,
+      "status": "confirmed"
+    },
+    {
+      "id": 2,
+      "userId": 5,
+      "roomId": 1,
+      "checkIn": "2026-06-03",
+      "checkOut": "2026-06-04",
+      "totalPrice": 400,
+      "status": "confirmed"
+    },
+    {
+      "id": 3,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-06-04",
+      "checkOut": "2026-06-05",
+      "totalPrice": 400,
+      "status": "cancelled"
+    },
+    {
+      "id": 4,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-05-23",
+      "checkOut": "2026-05-24",
+      "totalPrice": 400,
+      "status": "cancelled"
+    },
+    {
+      "id": 5,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-05-27",
+      "checkOut": "2026-05-28",
+      "totalPrice": 400,
+      "status": "cancelled"
+    },
+    {
+      "id": 6,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-06-19",
+      "checkOut": "2026-06-20",
+      "totalPrice": 400,
+      "status": "cancelled"
+    },
+    {
+      "id": 7,
+      "userId": 4,
+      "roomId": 1,
+      "checkIn": "2026-06-19",
+      "checkOut": "2026-06-20",
+      "totalPrice": 400,
+      "status": "confirmed"
+    },
+    {
+      "id": 8,
+      "userId": 4,
+      "roomId": 2,
+      "checkIn": "2026-05-31",
+      "checkOut": "2026-06-02",
+      "totalPrice": 600,
+      "status": "confirmed"
+    },
+    {
+      "id": 9,
+      "userId": 5,
+      "roomId": 1,
+      "checkIn": "2026-06-20",
+      "checkOut": "2026-06-21",
+      "totalPrice": 400,
+      "status": "confirmed"
+    },
+    {
+      "id": 10,
+      "userId": 5,
+      "roomId": 5,
+      "checkIn": "2026-06-10",
+      "checkOut": "2026-06-12",
+      "totalPrice": 1300,
+      "status": "confirmed"
+    },
+    {
+      "id": 11,
+      "userId": 5,
+      "roomId": 4,
+      "checkIn": "2026-06-23",
+      "checkOut": "2026-06-24",
+      "totalPrice": 250,
+      "status": "cancelled"
+    },
+    {
+      "id": 12,
+      "userId": 5,
+      "roomId": 4,
+      "checkIn": "2026-06-26",
+      "checkOut": "2026-06-27",
+      "totalPrice": 250,
+      "status": "cancelled"
+    },
+    {
+      "id": 13,
+      "userId": 5,
+      "roomId": 4,
+      "checkIn": "2026-06-22",
+      "checkOut": "2026-06-23",
+      "totalPrice": 250,
+      "status": "cancelled"
+    },
+    {
+      "id": 14,
+      "userId": 5,
+      "roomId": 4,
+      "checkIn": "2026-06-23",
+      "checkOut": "2026-06-24",
+      "totalPrice": 250,
+      "status": "cancelled"
+    },
+    {
+      "id": 15,
+      "userId": 5,
+      "roomId": 4,
+      "checkIn": "2026-06-23",
+      "checkOut": "2026-06-24",
+      "totalPrice": 250,
+      "status": "cancelled"
+    },
+    {
+      "id": 16,
+      "userId": 5,
+      "roomId": 4,
+      "checkIn": "2026-06-24",
+      "checkOut": "2026-06-25",
+      "totalPrice": 250,
+      "status": "confirmed"
+    },
+    {
+      "id": 17,
+      "userId": 5,
+      "roomId": 4,
+      "checkIn": "2026-06-27",
+      "checkOut": "2026-06-28",
+      "totalPrice": 250,
+      "status": "confirmed"
+    }
+  ],
+  "balanceRequests": [
+    {
+      "id": 1,
+      "userId": 4,
+      "amount": 500,
+      "status": "approved",
+      "createdAt": "5/28/2026, 11:53:22 AM"
+    },
+    {
+      "id": 2,
+      "userId": 5,
+      "amount": 500,
+      "status": "approved",
+      "createdAt": "5/30/2026, 1:12:00 PM"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "amount": 200,
+      "status": "approved",
+      "createdAt": "5/30/2026, 1:55:59 PM"
+    }
+  ]
+}

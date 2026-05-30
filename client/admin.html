@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Luxury Hotel</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-layout">
+
+<div id="app" class="d-flex w-100">
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+        <a href="index.html" class="sidebar-logo">
+            <span class="sidebar-text">👑 Luxury Hotel</span>
+            <i class="fas fa-crown d-lg-none"></i>
+        </a>
+        
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <div class="sidebar-link" :class="{active: adminTab === 'dashboard'}" v-on:click="adminTab = 'dashboard'">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="sidebar-text">Dashboard</span>
+                </div>
+            </li>
+            <li class="sidebar-item">
+                <div class="sidebar-link" :class="{active: adminTab === 'rooms'}" v-on:click="adminTab = 'rooms'; loadRooms()">
+                    <i class="fas fa-bed"></i>
+                    <span class="sidebar-text">Rooms</span>
+                </div>
+            </li>
+            <li class="sidebar-item">
+                <div class="sidebar-link" :class="{active: adminTab === 'users'}" v-on:click="adminTab = 'users'; loadUsers()">
+                    <i class="fas fa-users"></i>
+                    <span class="sidebar-text">Users</span>
+                </div>
+            </li>
+            <li class="sidebar-item">
+                <div class="sidebar-link" :class="{active: adminTab === 'reservations'}" v-on:click="adminTab = 'reservations'; loadReservations()">
+                    <i class="fas fa-calendar-check"></i>
+                    <span class="sidebar-text">Reservations</span>
+                </div>
+            </li>
+            <li class="sidebar-item">
+                <div class="sidebar-link" :class="{active: adminTab === 'requests'}" v-on:click="adminTab = 'requests'; loadBalanceRequests()">
+                    <i class="fas fa-credit-card"></i>
+                    <span class="sidebar-text">Balance Requests</span>
+                </div>
+            </li>
+        </ul>
+
+        <div class="mt-auto pt-5">
+            <div class="sidebar-link text-danger" v-on:click="logout" style="cursor: pointer;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="sidebar-text">Logout</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+        <header class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h1 class="fw-bold m-0 text-capitalize">{{ adminTab }}</h1>
+                <p class="text-muted">Welcome back, Administrator</p>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="me-4 text-end">
+                    <p class="m-0 fw-bold">{{ loggedUser ? loggedUser.username : 'Admin' }}</p>
+                    <small class="text-success">Online</small>
+                </div>
+                <img :src="loggedUser && loggedUser.profilePhoto ? API_URL + '/' + loggedUser.profilePhoto : 'https://ui-avatars.com/api/?name=Admin&background=f7c75f&color=0f172a'" class="rounded-circle" width="50" height="50">
+            </div>
+        </header>
+
+        <!-- DASHBOARD SECTION -->
+        <div v-if="adminTab === 'dashboard'">
+            <div class="row g-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="admin-card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                                <i class="fas fa-users text-primary fs-4"></i>
+                            </div>
+                            <span class="text-success"><i class="fas fa-arrow-up"></i> 12%</span>
+                        </div>
+                        <h3 class="fw-bold">3</h3>
+                        <p class="text-muted m-0">Total Users</p>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="admin-card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                                <i class="fas fa-bed text-warning fs-4"></i>
+                            </div>
+                            <span class="text-success"><i class="fas fa-check"></i> Active</span>
+                        </div>
+                        <h3 class="fw-bold">{{ usersList.length }}</h3>
+                        <p class="text-muted m-0">Total Users</p>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="admin-card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                                <i class="fas fa-bed text-warning fs-4"></i>
+                            </div>
+                            <span class="text-success"><i class="fas fa-hotel"></i> Inventory</span>
+                        </div>
+                        <h3 class="fw-bold">{{ rooms.length }}</h3>
+                        <p class="text-muted m-0">Total Rooms</p>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="admin-card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                                <i class="fas fa-calendar-alt text-success fs-4"></i>
+                            </div>
+                            <span class="text-info"><i class="fas fa-sync"></i> Real-time</span>
+                        </div>
+                        <h3 class="fw-bold">{{ reservationsList.length }}</h3>
+                        <p class="text-muted m-0">Reservations</p>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="admin-card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="rounded-circle bg-danger bg-opacity-10 p-3">
+                                <i class="fas fa-wallet text-danger fs-4"></i>
+                            </div>
+                            <span class="text-success"><i class="fas fa-coins"></i> Total</span>
+                        </div>
+                        <h3 class="fw-bold">€{{ getTotalRevenue() }}</h3>
+                        <p class="text-muted m-0">Total Revenue</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-lg-8">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h5 class="admin-card-title">Recent Activity</h5>
+                            <button class="btn btn-sm btn-outline-dark" v-on:click="loadReservations">Refresh All Data</button>
+                        </div>
+                        <div class="admin-card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3 border-0 border-bottom">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-success rounded-circle p-2 me-3"><i class="fas fa-plus text-white small"></i></div>
+                                        <div>
+                                            <p class="m-0 fw-bold">Live Inventory</p>
+                                            <small class="text-muted">Total of {{ rooms.length }} luxury rooms registered</small>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Active</small>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3 border-0 border-bottom">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-info rounded-circle p-2 me-3"><i class="fas fa-user text-white small"></i></div>
+                                        <div>
+                                            <p class="m-0 fw-bold">Active Members</p>
+                                            <small class="text-muted">{{ usersList.length }} Registered Guests</small>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Growing</small>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h5 class="admin-card-title">Digital Health</h5>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>API Connectivity</span>
+                                    <span class="text-success">Excellent</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Database Status</span>
+                                    <span class="text-info">Optimal</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-info" style="width: 25%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROOMS SECTION -->
+        <div v-if="adminTab === 'rooms'">
+            <div class="row g-4">
+                <!-- ADD ROOM COLUMN -->
+                <div class="col-lg-6">
+                    <div class="admin-card h-100">
+                        <div class="admin-card-header">
+                            <h5 class="admin-card-title">Add New Room</h5>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Room Name</label>
+                                    <input class="form-control luxury-input" v-model="roomName" placeholder="Royal Suite">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Room Number</label>
+                                    <input class="form-control luxury-input" v-model="roomNumber" placeholder="301">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Price (€)</label>
+                                    <input type="number" class="form-control luxury-input" v-model="price">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Capacity</label>
+                                    <input type="number" class="form-control luxury-input" v-model="capacity">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Total Count</label>
+                                    <input type="number" class="form-control luxury-input" v-model="numberOfRooms">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold">Description</label>
+                                    <textarea class="form-control luxury-input" v-model="description" rows="3"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button class="admin-btn-gold w-100" v-on:click="addRoom">
+                                        <i class="fas fa-plus me-2"></i> Create Luxury Room
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UPDATE / DELETE COLUMN -->
+                <div class="col-lg-6">
+                    <div class="admin-card h-100">
+                        <div class="admin-card-header">
+                            <h5 class="admin-card-title">Update / Delete Room</h5>
+                        </div>
+                        <div class="admin-card-body">
+                            <div class="row g-3 mb-4">
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-primary">Target Room ID (Auto-fills on exit)</label>
+                                    <input class="form-control luxury-input border-primary" v-model="updateRoomId" v-on:blur="fetchRoomDetails" placeholder="Enter ID">
+                                </div>
+
+                                <!-- MEDIA MANAGEMENT INTEGRATED -->
+                                <div class="col-12">
+                                    <div class="bg-light p-3 rounded-4 my-2 border">
+                                        <h6 class="fw-bold mb-3 small"><i class="fas fa-photo-video me-2"></i>Media Management for ID #{{ updateRoomId || '?' }}</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label x-small fw-bold">Upload Photo</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="file" class="form-control" v-on:change="selectRoomImage">
+                                                <button class="btn btn-dark" v-on:click="imageRoomId = updateRoomId; uploadRoomImage()">Upload</button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="form-label x-small fw-bold">Set Room Video</label>
+                                            <div class="input-group input-group-sm">
+                                                <input type="file" class="form-control" v-on:change="selectRoomVideo">
+                                                <button class="btn btn-warning" v-on:click="videoRoomId = updateRoomId; uploadRoomVideo()">Set</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold text-muted">New Name</label>
+                                    <input class="form-control luxury-input" v-model="updateRoomName">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold text-muted">New Price (€)</label>
+                                    <input type="number" class="form-control luxury-input" v-model="updateRoomPrice">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-muted">Status</label>
+                                    <select class="form-select luxury-input" v-model="updateRoomStatus">
+                                        <option value="available">Available</option>
+                                        <option value="maintenance">Maintenance</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small fw-bold text-muted">Room No.</label>
+                                    <input class="form-control luxury-input" v-model="updateRoomNumber">
+                                </div>
+                                <div class="col-3">
+                                    <label class="form-label small fw-bold text-muted">Cap.</label>
+                                    <input type="number" class="form-control luxury-input" v-model="updateCapacity">
+                                </div>
+                                <div class="col-3">
+                                    <label class="form-label small fw-bold text-muted">Count</label>
+                                    <input type="number" class="form-control luxury-input" v-model="updateNumberOfRooms">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-muted">Description</label>
+                                    <textarea class="form-control luxury-input" v-model="updateDescription" rows="2"></textarea>
+                                </div>
+                                
+                                <div class="col-12 mt-3">
+                                    <button class="admin-btn-primary w-100" v-on:click="updateRoom">
+                                        Update Room Details
+                                    </button>
+                                </div>
+
+                                <div class="col-12 mt-4 pt-3 border-top">
+                                    <label class="form-label small fw-bold text-danger">Permanently Remove Room</label>
+                                    <div class="input-group">
+                                        <input class="form-control luxury-input border-danger" v-model="deleteRoomId" placeholder="Room ID to delete">
+                                        <button class="btn btn-danger px-4" v-on:click="deleteRoom">Delete Room</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXISTING ROOMS LIST -->
+            <div class="admin-card mt-5">
+                <div class="admin-card-header">
+                    <h5 class="admin-card-title">Manage Existing Rooms</h5>
+                    <button class="btn btn-sm btn-dark" v-on:click="loadRooms"><i class="fas fa-sync me-1"></i> Refresh</button>
+                </div>
+                <div class="admin-card-body">
+                    <div class="luxury-table-container">
+                        <table class="luxury-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Room Details</th>
+                                    <th>Capacity</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="room in rooms" :key="room.id">
+                                    <td class="fw-bold">#{{ room.id }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img v-if="room.images && room.images.length > 0" :src="API_URL + '/' + room.images[0]" class="rounded me-3" width="50" height="40" style="object-fit: cover;">
+                                            <div v-else class="bg-light rounded me-3 d-flex align-items-center justify-content-center" width="50" height="40"><i class="fas fa-image text-muted"></i></div>
+                                            <div>
+                                                <p class="m-0 fw-bold">{{ room.name }}</p>
+                                                <small class="text-muted">Room No: {{ room.roomNumber }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ room.capacity }} Persons</td>
+                                    <td><span class="fw-bold text-dark">€{{ room.price }}</span></td>
+                                    <td>
+                                        <span class="badge-luxury" :class="room.status === 'available' ? 'badge-success' : 'badge-danger'">
+                                            {{ room.status }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-dark" v-on:click="updateRoomId = room.id; fetchRoomDetails()"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-outline-danger" v-on:click="deleteRoomId = room.id; deleteRoom()"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- USERS SECTION -->
+        <div v-if="adminTab === 'users'">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h5 class="admin-card-title">Registered Members</h5>
+                    <button class="btn btn-sm btn-dark" v-on:click="loadUsers"><i class="fas fa-sync"></i></button>
+                </div>
+                <div class="admin-card-body">
+                    <div class="luxury-table-container">
+                        <table class="luxury-table">
+                            <thead>
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Balance</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="user in output" v-if="Array.isArray(output)" :key="user.id">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img :src="user.profilePhoto ? API_URL + '/' + user.profilePhoto : 'https://ui-avatars.com/api/?name=' + user.username" class="rounded-circle me-3" width="40" height="40">
+                                            <p class="m-0 fw-bold">{{ user.username }} (#{{ user.id }})</p>
+                                        </div>
+                                    </td>
+                                    <td>{{ user.email || 'None' }}</td>
+                                    <td><span class="badge-luxury" :class="user.role === 'admin' ? 'badge-info' : 'badge-warning'">{{ user.role }}</span></td>
+                                    <td><span class="fw-bold text-success">€{{ user.balance }}</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-warning me-2" v-on:click="balanceUserId = user.id; newBalance = user.balance"><i class="fas fa-wallet"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger" v-on:click="deleteUserId = user.id; deleteUser()"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- INLINE BALANCE UPDATE -->
+            <div class="admin-card mt-4" v-if="balanceUserId">
+                <div class="admin-card-header bg-warning bg-opacity-10">
+                    <h5 class="admin-card-title">Update Balance (ID: #{{ balanceUserId }})</h5>
+                    <button class="btn-close" v-on:click="balanceUserId = ''"></button>
+                </div>
+                <div class="admin-card-body">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-8"><input type="number" class="form-control luxury-input" v-model="newBalance"></div>
+                        <div class="col-md-4"><button class="admin-btn-gold w-100" v-on:click="updateBalance">Save</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BALANCE REQUESTS SECTION -->
+        <div v-if="adminTab === 'requests'">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h5 class="admin-card-title">Pending Balance Requests</h5>
+                    <button class="btn btn-sm btn-dark" v-on:click="loadBalanceRequests">Refresh</button>
+                </div>
+                <div class="admin-card-body">
+                    <div class="luxury-table-container">
+                        <table class="luxury-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="req in output" v-if="Array.isArray(output)" :key="req.id">
+                                    <td>#{{ req.id }}</td>
+                                    <td>User ID: #{{ req.userId }}</td>
+                                    <td><span class="fw-bold">€{{ req.amount }}</span></td>
+                                    <td><span class="badge-luxury" :class="req.status === 'pending' ? 'badge-warning' : (req.status === 'approved' ? 'badge-success' : 'badge-danger')">{{ req.status }}</span></td>
+                                    <td>
+                                        <div v-if="req.status === 'pending'" class="btn-group">
+                                            <button class="btn btn-sm btn-success" v-on:click="balanceRequestId = req.id; approveBalanceRequest()">Approve</button>
+                                            <button class="btn btn-sm btn-danger" v-on:click="balanceRequestId = req.id; rejectBalanceRequest()">Reject</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESERVATIONS SECTION -->
+        <div v-if="adminTab === 'reservations'">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h5 class="admin-card-title">Reservations Log</h5>
+                    <button class="btn btn-sm btn-dark" v-on:click="loadReservations">Refresh</button>
+                </div>
+                <div class="admin-card-body">
+                    <div class="luxury-table-container">
+                        <table class="luxury-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Guest/Room</th>
+                                    <th>Stay</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="res in output" v-if="Array.isArray(output)" :key="res.id">
+                                    <td>#{{ res.id }}</td>
+                                    <td>User #{{ res.userId }} / Room #{{ res.roomId }}</td>
+                                    <td>{{ res.checkIn }} - {{ res.checkOut }}</td>
+                                    <td>€{{ res.totalPrice }}</td>
+                                    <td><span class="badge-luxury" :class="res.status === 'confirmed' ? 'badge-success' : 'badge-danger'">{{ res.status }}</span></td>
+                                    <td><button class="btn btn-sm btn-outline-danger" v-if="res.status === 'confirmed'" v-on:click="cancelReservationId = res.id; cancelReservation()">Cancel</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOASTS -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" v-if="statusMessage">
+            <div class="toast show align-items-center text-white border-0 shadow-lg" :class="'bg-' + statusType">
+                <div class="d-flex">
+                    <div class="toast-body">{{ statusMessage }}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" v-on:click="statusMessage = ''"></button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="libs/vue.js"></script>
+<script src="libs/axios.js"></script>
+<script src="js/config.js"></script>
+<script src="js/clientMethods.js"></script>
+<script src="js/userMethods.js"></script>
+<script src="js/roomMethods.js"></script>
+<script src="js/reservationMethods.js"></script>
+<script src="js/balanceRequestMethods.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

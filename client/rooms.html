@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Rooms - Luxury Hotel</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+
+</head>
+
+<body>
+
+<div id="app">
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark luxury-navbar">
+
+        <div class="container">
+
+            <a class="navbar-brand luxury-logo"
+               href="index.html">
+
+                👑 Luxury Hotel
+
+            </a>
+
+            <div class="navbar-nav ms-auto">
+
+                <a class="nav-link luxury-link"
+                   href="index.html">
+
+                    Home
+
+                </a>
+
+                <a class="nav-link luxury-link"
+                   href="rooms.html">
+
+                    Rooms
+
+                </a>
+
+                <a class="nav-link luxury-link"
+                   href="reservations.html">
+
+                    Reservations
+
+                </a>
+
+                <a class="nav-link luxury-link"
+                   href="contact.html">
+
+                    Contact
+
+                </a>
+
+                <template v-if="!loggedUser">
+
+                    <a class="nav-link luxury-link"
+                       href="login.html">
+
+                        Login
+
+                    </a>
+
+                    <a class="nav-link luxury-link"
+                       href="signup.html">
+
+                        Sign Up
+
+                    </a>
+
+                </template>
+
+                <template v-else>
+
+                    <a class="nav-link luxury-link"
+                       href="profile.html">
+
+                        Profile
+
+                    </a>
+
+                    <a
+                            v-if="loggedUser.role === 'admin'"
+                            class="nav-link luxury-link"
+                            href="admin.html">
+
+                        Admin
+
+                    </a>
+
+                    <div class="balance-box" v-on:click="syncUser">
+
+                        € {{ loggedUser.balance }}
+
+                    </div>
+
+                    <button
+                            class="btn logout-btn"
+                            v-on:click="logout">
+
+                        Logout
+
+                    </button>
+
+                </template>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!-- HERO -->
+
+    <section class="page-header">
+
+        <div class="container text-center">
+
+            <h1 class="page-title">
+
+                Our Luxury Rooms
+
+            </h1>
+
+            <p>
+
+                Discover comfort, elegance and unforgettable experiences.
+
+            </p>
+
+            <button
+                    class="btn btn-warning mt-3"
+
+                    v-on:click="loadRooms">
+
+                Load Rooms
+
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- ROOMS -->
+
+    <section class="rooms-section">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div
+                        class="col-lg-4 col-md-6 mb-4"
+
+                        v-for="room in rooms"
+
+                        :key="room.id">
+
+                    <div class="luxury-room-card">
+
+                        <img
+                                v-if="room.images && room.images.length > 0"
+
+                                :src="API_URL + '/' + room.images[0]"
+
+                                class="room-image">
+
+                        <img
+                                v-else
+
+                                src="images/default-room.jpg"
+
+                                class="room-image">
+
+                        <div class="room-content">
+
+                            <h3 class="room-title">
+
+                                {{ room.name }}
+
+                            </h3>
+
+                            <p class="room-description">
+
+                                {{ room.description }}
+
+                            </p>
+
+                            <p>
+
+                                Capacity:
+                                {{ room.capacity }}
+
+                            </p>
+
+                            <p>
+
+                                Room Number:
+                                {{ room.roomNumber }}
+
+                            </p>
+
+                            <div class="room-price">
+
+                                €{{ room.price }}
+
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+
+                                <button
+                                        class="btn btn-dark"
+
+                                        v-on:click="showRoomDetails(room)">
+
+                                    View Details
+
+                                </button>
+
+                                <button
+                                        class="btn select-room-btn"
+
+                                        v-on:click="
+                                reservationRoomId = room.id;
+                                saveSelections();
+                                ">
+
+                                    Select Room
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ROOM MODAL -->
+
+    <div
+            class="modal fade"
+            id="roomModal"
+            tabindex="-1">
+
+        <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+
+                        {{ selectedRoom ? selectedRoom.name : '' }}
+
+                    </h5>
+
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal">
+
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <video
+                            v-if="selectedRoom"
+                            controls
+                            class="w-100 rounded">
+
+                        <source
+                                :src="API_URL + '/' + selectedRoom.video"
+                                type="video/mp4">
+                    </video>
+
+                    <div
+                            v-if="selectedRoom"
+                            class="mt-4">
+
+                        <h4>Description</h4>
+
+                        <p>
+
+                            {{ selectedRoom.description }}
+
+                        </p>
+
+                        <hr>
+
+                        <p>
+
+                            <strong>Capacity:</strong>
+                            {{ selectedRoom.capacity }}
+
+                        </p>
+
+                        <p>
+
+                            <strong>Price:</strong>
+                            €{{ selectedRoom.price }}
+
+                        </p>
+
+                        <p>
+
+                            <strong>Status:</strong>
+                            {{ selectedRoom.status }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                            class="btn btn-warning"
+
+                            v-if="selectedRoom"
+
+                            v-on:click="
+                    reservationRoomId = selectedRoom.id;
+                    saveSelections();
+                    ">
+
+                        Reserve This Room
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        <div class="container text-center">
+
+            Luxury Hotel © 2026
+
+        </div>
+
+    </footer>
+
+
+</div>
+
+<script src="libs/vue.js"></script>
+
+<script src="libs/axios.js"></script>
+
+<script src="js/config.js"></script>
+
+<script src="js/clientMethods.js"></script>
+
+<script src="js/userMethods.js"></script>
+
+<script src="js/roomMethods.js"></script>
+
+<script src="js/reservationMethods.js"></script>
+
+<script src="js/balanceRequestMethods.js"></script>
+
+<script src="js/app.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

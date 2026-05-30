@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Luxury Hotel</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark luxury-navbar fixed-top">
+
+        <div class="container">
+
+            <a class="navbar-brand luxury-logo"
+               href="index.html">
+
+                👑 Luxury Hotel
+
+            </a>
+
+            <div class="navbar-nav ms-auto">
+
+                <a class="nav-link luxury-link"
+                   href="index.html">
+
+                    Home
+
+                </a>
+
+                <a class="nav-link luxury-link"
+                   href="rooms.html">
+
+                    Rooms
+
+                </a>
+
+                <a class="nav-link luxury-link"
+                   href="reservations.html">
+
+                    Reservations
+
+                </a>
+
+                <a class="nav-link luxury-link"
+                   href="contact.html">
+
+                    Contact
+
+                </a>
+
+                <template v-if="!loggedUser">
+
+                    <a class="nav-link luxury-link"
+                       href="login.html">
+
+                        Login
+
+                    </a>
+
+                    <a class="nav-link luxury-link"
+                       href="signup.html">
+
+                        Sign Up
+
+                    </a>
+
+                </template>
+
+                <template v-else>
+
+                    <a class="nav-link luxury-link"
+                       href="profile.html">
+
+                        Profile
+
+                    </a>
+
+                    <a
+                            v-if="loggedUser.role === 'admin'"
+                            class="nav-link luxury-link"
+                            href="admin.html">
+
+                        Admin
+
+                    </a>
+
+                    <div class="balance-box" v-on:click="syncUser">
+
+                        € {{ loggedUser.balance }}
+
+                    </div>
+
+                    <button
+                            class="btn logout-btn"
+                            v-on:click="logout">
+
+                        Logout
+
+                    </button>
+
+                </template>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- HERO VIDEO -->
+
+    <section class="hero-video-section">
+
+        <video
+                autoplay
+                muted
+                loop
+                playsinline
+                class="hero-video">
+
+            <source
+                    src="images/video1.mp4"
+                    type="video/mp4">
+
+        </video>
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <h1 class="hero-title">
+
+                Experience True Luxury
+
+            </h1>
+
+            <p class="hero-subtitle">
+
+                Premium Rooms • Fine Dining • Spa & Wellness
+
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="rooms.html"
+                   class="btn explore-btn">
+
+                    Explore Rooms
+
+                </a>
+
+                <a href="reservations.html"
+                   class="btn reserve-btn">
+
+                    Book Now
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ABOUT -->
+
+    <section class="about-section">
+
+        <div class="container">
+
+            <h2 class="section-title">
+
+                Welcome To Luxury Hotel
+
+            </h2>
+
+            <p class="about-text">
+
+                Discover elegant suites, breathtaking views,
+                exceptional comfort and premium services
+                designed to create unforgettable memories
+                for every guest.
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- FEATURES -->
+
+    <section class="features-section">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-lg-4 mb-4">
+
+                    <div class="feature-card">
+
+                        <h3>
+
+                            Luxury Rooms
+
+                        </h3>
+
+                        <p>
+
+                            Spacious rooms with modern
+                            furniture and beautiful views.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 mb-4">
+
+                    <div class="feature-card">
+
+                        <h3>
+
+                            Fine Dining
+
+                        </h3>
+
+                        <p>
+
+                            Enjoy premium cuisine prepared
+                            by experienced chefs.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4 mb-4">
+
+                    <div class="feature-card">
+
+                        <h3>
+
+                            Spa & Wellness
+
+                        </h3>
+
+                        <p>
+
+                            Relax in our luxury spa,
+                            swimming pool and wellness center.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- WHY CHOOSE US -->
+
+    <section class="about-section">
+
+        <div class="container">
+
+            <h2 class="section-title">
+
+                Why Choose Us
+
+            </h2>
+
+            <p class="about-text">
+
+                Luxury Hotel combines elegance,
+                comfort and innovation to offer
+                a unique experience for business
+                travelers, families and couples.
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <h5>
+
+                        Luxury Hotel
+
+                    </h5>
+
+                    <p>
+
+                        Premium comfort and unforgettable experiences.
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <h5>
+
+                        Contact
+
+                    </h5>
+
+                    <p>
+
+                        contact@luxuryhotel.com
+
+                    </p>
+
+                    <p>
+
+                        +40 700 123 456
+
+                    </p>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <h5>
+
+                        Location
+
+                    </h5>
+
+                    <p>
+
+                        Cluj-Napoca, Romania
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="text-center">
+
+                Luxury Hotel © 2026
+
+            </div>
+
+        </div>
+
+    </footer>
+
+</div>
+
+<script src="libs/vue.js"></script>
+
+<script src="libs/axios.js"></script>
+
+<script src="js/config.js"></script>
+
+<script src="js/clientMethods.js"></script>
+
+<script src="js/userMethods.js"></script>
+
+<script src="js/roomMethods.js"></script>
+
+<script src="js/reservationMethods.js"></script>
+
+<script src="js/balanceRequestMethods.js"></script>
+
+<script src="js/app.js"></script>
+
+</body>
+
+</html>
