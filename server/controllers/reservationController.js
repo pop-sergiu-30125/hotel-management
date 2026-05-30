@@ -17,6 +17,18 @@ function reservationController(app, readDatabase, writeDatabase, getNextId) {
     res.json(db.reservations);
   });
 
+  // GET RESERVATIONS BY USER ID
+  app.get("/users/:id/reservations", function (req, res) {
+    const db = readDatabase();
+    const userId = Number(req.params.id);
+
+    const userReservations = db.reservations.filter(function (reservation) {
+      return reservation.userId === userId;
+    });
+
+    res.json(userReservations);
+  });
+
   // GET RESERVATIONS WITH DETAILS
   app.get("/reservations/details", function (req, res) {
     const db = readDatabase();
