@@ -230,19 +230,7 @@
 
                                         v-on:click="showRoomDetails(room)">
 
-                                    View Details
-
-                                </button>
-
-                                <button
-                                        class="btn select-room-btn"
-
-                                        v-on:click="
-                                reservationRoomId = room.id;
-                                saveSelections();
-                                ">
-
-                                    Select Room
+                                    View Details & Book
 
                                 </button>
 
@@ -339,21 +327,31 @@
 
                 </div>
 
-                <div class="modal-footer">
+                <div class="modal-footer d-block">
 
-                    <button
-                            class="btn btn-warning"
-
-                            v-if="selectedRoom"
-
-                            v-on:click="
-                    reservationRoomId = selectedRoom.id;
-                    saveSelections();
-                    ">
-
-                        Reserve This Room
-
-                    </button>
+                    <div v-if="selectedRoom">
+                        <h5 class="mb-3 border-bottom pb-2">Book This Room</h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Check In</label>
+                                <input type="date" class="form-control" v-model="reservationCheckIn">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Check Out</label>
+                                <input type="date" class="form-control" v-model="reservationCheckOut">
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button
+                                    class="btn btn-warning w-100"
+                                    v-on:click="reservationRoomId = selectedRoom.id; createReservation()">
+                                Confirm Reservation
+                            </button>
+                        </div>
+                        <div v-if="statusMessage" class="mt-3 alert" :class="'alert-' + statusType">
+                            {{ statusMessage }}
+                        </div>
+                    </div>
 
                 </div>
 

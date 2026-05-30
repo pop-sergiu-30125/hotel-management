@@ -23,9 +23,18 @@
       "username": "paul paul",
       "password": "pass123",
       "role": "guest",
-      "balance": 0,
+      "balance": 25,
       "email": "paulpaul2@hotel.ro",
       "profilePhoto": ""
+    },
+    {
+      "id": 6,
+      "username": "Gabriel",
+      "password": "pass123",
+      "email": "",
+      "profilePhoto": "",
+      "role": "guest",
+      "balance": 6000
     }
   ],
   "rooms": [
@@ -145,7 +154,7 @@
       "checkIn": "2026-06-03",
       "checkOut": "2026-06-04",
       "totalPrice": 400,
-      "status": "confirmed"
+      "status": "cancelled"
     },
     {
       "id": 3,
@@ -281,6 +290,24 @@
       "checkOut": "2026-06-28",
       "totalPrice": 250,
       "status": "confirmed"
+    },
+    {
+      "id": 18,
+      "userId": 5,
+      "roomId": 7,
+      "checkIn": "2026-06-17",
+      "checkOut": "2026-06-18",
+      "totalPrice": 375,
+      "status": "confirmed"
+    },
+    {
+      "id": 19,
+      "userId": 6,
+      "roomId": 4,
+      "checkIn": "2026-06-25",
+      "checkOut": "2026-06-27",
+      "totalPrice": 500,
+      "status": "confirmed"
     }
   ],
   "balanceRequests": [
@@ -304,6 +331,13 @@
       "amount": 200,
       "status": "approved",
       "createdAt": "5/30/2026, 1:55:59 PM"
+    },
+    {
+      "id": 4,
+      "userId": 6,
+      "amount": 6500,
+      "status": "approved",
+      "createdAt": "5/30/2026, 6:55:02 PM"
     }
   ]
 }

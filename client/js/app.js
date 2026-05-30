@@ -10,6 +10,7 @@ var app = new Vue({
 
     loginUsername: "",
     loginPassword: "",
+    rememberMe: false,
 
     updateUserId: "",
     updateUsername: "",
@@ -83,7 +84,9 @@ var app = new Vue({
     this.reservationRoomId = sessionStorage.getItem("reservationRoomId") || ""; //for second requirement for client app
     this.reservationCheckIn = sessionStorage.getItem("reservationCheckIn") || "";
     this.reservationCheckOut = sessionStorage.getItem("reservationCheckOut") || "";
-    this.loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    
+    const userStr = sessionStorage.getItem("loggedUser") || localStorage.getItem("loggedUser");
+    this.loggedUser = userStr ? JSON.parse(userStr) : null;
 
     this.syncUser();
 
@@ -137,7 +140,17 @@ var app = new Vue({
     },
 
     getLoggedUser: function () {
-      return JSON.parse(localStorage.getItem("loggedUser"));
+      const userStr = sessionStorage.getItem("loggedUser") || localStorage.getItem("loggedUser");
+      return userStr ? JSON.parse(userStr) : null;
+    },
+
+    updateLoggedUserStorage: function (user) {
+      if (localStorage.getItem("loggedUser")) {
+        localStorage.setItem("loggedUser", JSON.stringify(user));
+      } else if (sessionStorage.getItem("loggedUser")) {
+        sessionStorage.setItem("loggedUser", JSON.stringify(user));
+      }
+      this.loggedUser = user;
     },
 
     saveSelections: function () {

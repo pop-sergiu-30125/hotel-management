@@ -155,131 +155,64 @@
 
         <div class="container">
 
-            <!-- CREATE RESERVATION -->
+            <!-- MY RESERVATIONS -->
 
-            <div class="reservation-card">
+            <div class="reservation-card mb-5">
 
-                <h2>
-
-                    Create Reservation
-
-                </h2>
-
-                <div class="row">
-
-                    <div class="col-md-4">
-
-                        <label class="form-label">
-
-                            Selected Room
-
-                        </label>
-
-                        <input
-                                class="form-control"
-
-                                v-model="reservationRoomId">
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <label class="form-label">
-
-                            Check In
-
-                        </label>
-
-                        <input
-                                type="date"
-
-                                class="form-control"
-
-                                v-model="reservationCheckIn">
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <label class="form-label">
-
-                            Check Out
-
-                        </label>
-
-                        <input
-                                type="date"
-
-                                class="form-control"
-
-                                v-model="reservationCheckOut">
-
-                    </div>
-
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="m-0">My Booking History</h2>
+                    <button class="btn btn-sm btn-dark" v-on:click="loadMyReservations">
+                        <i class="fas fa-sync me-1"></i> Refresh
+                    </button>
                 </div>
 
-                <button
-                        class="btn reserve-btn mt-4"
+                <div v-if="!loggedUser" class="alert alert-warning text-center">
+                    Please log in to view your reservations.
+                </div>
 
-                        v-on:click="createReservation">
+                <div v-else-if="myReservations && myReservations.length === 0" class="alert alert-info text-center">
+                    You have no reservations yet. Head over to the Rooms page to book a stay!
+                </div>
 
-                    Reserve Now
-
-                </button>
-
-            </div>
-
-            <!-- CANCEL RESERVATION -->
-
-            <div class="reservation-card mt-5">
-
-                <h2>
-
-                    Cancel Reservation
-
-                </h2>
-
-                <div class="row">
-
-                    <div class="col-md-8">
-
-                        <input
-                                class="form-control"
-
-                                v-model="cancelReservationId"
-
-                                placeholder="Reservation ID">
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <button
-                                class="btn btn-danger w-100"
-
-                                v-on:click="cancelReservation">
-
-                            Cancel Booking
-
-                        </button>
-
-                    </div>
-
+                <div v-else class="table-responsive">
+                    <table class="table luxury-table">
+                        <thead>
+                            <tr>
+                                <th>Booking Reference</th>
+                                <th>Room Details</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Total Price</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="res in myReservations" :key="res.id">
+                                <td class="fw-bold text-primary">{{ getBookingReference(res.id) }}</td>
+                                <td class="fw-bold">{{ getRoomDisplay(res.roomId) }}</td>
+                                <td>{{ res.checkIn }}</td>
+                                <td>{{ res.checkOut }}</td>
+                                <td>€{{ res.totalPrice }}</td>
+                                <td>
+                                    <span class="badge-luxury" :class="res.status === 'confirmed' ? 'badge-success' : 'badge-danger'">
+                                        {{ res.status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-danger" v-if="res.status === 'confirmed'" v-on:click="cancelReservationId = res.id; cancelReservation()">
+                                        Cancel
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
 
             <!-- STATUS -->
 
-            <div class="reservation-card mt-5">
-
-                <h2>
-
-                    Reservation Status
-
-                </h2>
-
-            </div>
             <div
                     v-if="statusMessage"
                     class="reservation-status-card"
@@ -287,22 +220,7 @@
 
                 <h4>{{ statusMessage }}</h4>
 
-                <p v-if="output.required">
-
-                    Required Balance:
-                    €{{ output.required }}
-
-                </p>
-
-                <p v-if="output.currentBalance">
-
-                    Current Balance:
-                    €{{ output.currentBalance }}
-
-                </p>
-
             </div>
-
 
         </div>
 
