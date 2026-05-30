@@ -5,8 +5,18 @@ const userMethods = {
       password: this.signupPassword
     })
       .then(response => {
-        this.show(response.data);
+        const data = response.data;
+
+        if (data.user) {
+          sessionStorage.setItem("loggedUser", JSON.stringify(data.user));
+          this.loggedUser = data.user;
+        }
+
+        this.show(data);
         this.loadUsers();
+        
+        // Redirect to home page after successful signup
+        window.location.href = "index.html";
       })
       .catch(error => {
         if (error.response) {
@@ -26,13 +36,15 @@ const userMethods = {
         const data = response.data;
 
         if (data.user) {
-          localStorage.setItem("loggedUser", JSON.stringify(data.user));
+          if (this.rememberMe) {
+            localStorage.setItem("loggedUser", JSON.stringify(data.user));
+          } else {
+            sessionStorage.setItem("loggedUser", JSON.stringify(data.user));
+          }
+          this.loggedUser = data.user;
         }
 
-this.loggedUser = response.data.user;
         window.location.href = "index.html";
-
-
 
         this.show(data);
       })
@@ -47,11 +59,11 @@ this.loggedUser = response.data.user;
 
   logout: function () {
     localStorage.removeItem("loggedUser");
+    sessionStorage.removeItem("loggedUser");
 
-this.loggedUser = null;
+    this.loggedUser = null;
 
     window.location.href = "index.html";
-
 
     this.show({
       message: "Logged out"
@@ -99,8 +111,7 @@ this.loggedUser = null;
       .then(response => {
         const freshUser = response.data;
         if (freshUser) {
-          localStorage.setItem("loggedUser", JSON.stringify(freshUser));
-          this.loggedUser = freshUser;
+          this.updateLoggedUserStorage(freshUser);
         }
       })
       .catch(error => {
@@ -142,7 +153,7 @@ this.loggedUser = null;
         const data = response.data;
 
         if (data.user && data.user.id === loggedUser.id) {
-          localStorage.setItem("loggedUser", JSON.stringify(data.user));
+          this.updateLoggedUserStorage(data.user);
         }
 
         this.show(data);

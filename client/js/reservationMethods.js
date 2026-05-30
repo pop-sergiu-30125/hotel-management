@@ -1,4 +1,14 @@
 const reservationMethods = {
+  getBookingReference: function (id) {
+    return "BK-" + String(id).padStart(4, '0');
+  },
+  
+  getRoomDisplay: function (roomId) {
+    if (!this.rooms || this.rooms.length === 0) return "Loading...";
+    const room = this.rooms.find(r => r.id === roomId);
+    return room ? room.name + " (No. " + room.roomNumber + ")" : "Room removed";
+  },
+
   loadMyReservations: function () {
     const loggedUser = this.getLoggedUser();
     if (!loggedUser) return;
@@ -60,7 +70,7 @@ const reservationMethods = {
 
         if (data.remainingBalance !== undefined) {
           loggedUser.balance = data.remainingBalance;
-          localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+          this.updateLoggedUserStorage(loggedUser);
         }
 
         // Keep all selections (room ID and dates) in the form and session memory
@@ -100,7 +110,7 @@ const reservationMethods = {
 
           if (data.userBalance !== null && data.userBalance !== undefined) {
             loggedUser.balance = data.userBalance;
-            localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+            this.updateLoggedUserStorage(loggedUser);
           }
 
           this.show(data);
